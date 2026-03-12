@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { Heart, Shirt, ChevronDown, Check, LocateFixed } from 'lucide-react'
+import { UserMenu } from './UserMenu'
 import { useShopStore } from '@/lib/store/shopStore'
 import { createBrowserClient } from '@supabase/ssr'
 import type { Database } from '@/types/database'
@@ -150,6 +151,7 @@ export function Navbar() {
         {/* Right actions */}
         <div className="flex items-center gap-2">
           <StoreSelector />
+          <UserMenu />
 
           <Link
             href="/wishlist"
