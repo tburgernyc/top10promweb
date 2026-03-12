@@ -173,6 +173,24 @@ export function Hero() {
       style={{ perspective: '1100px' }}
     >
 
+      {/* ── Layer 0 · Video background ── */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        style={{ opacity: 0.45 }}
+      >
+        <source src="/video/hero.mp4" type="video/mp4" />
+      </video>
+      {/* Dark scrim so overlays + text stay legible */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'linear-gradient(to bottom, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.35) 50%, rgba(5,5,5,0.72) 100%)' }}
+      />
+
       {/* ── Layer 1 · Atmospheric depth hazes ── */}
       <div
         ref={bgRef}
