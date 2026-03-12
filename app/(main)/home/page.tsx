@@ -5,6 +5,7 @@ import { FeaturedDresses } from '@/components/landing/FeaturedDresses'
 import { NoDuplicatePromo } from '@/components/landing/NoDuplicatePromo'
 import { TrustSection } from '@/components/landing/TrustSection'
 import { DesignerStrip } from '@/components/landing/DesignerStrip'
+import { DesignersSection } from '@/components/landing/DesignersSection'
 
 export const metadata: Metadata = {
   title: 'Top 10 Prom | Digital Showroom',
@@ -33,6 +34,9 @@ export default async function HomePage() {
 
         {/* Why Top 10 Prom — bento grid */}
         <TrustSection />
+
+        {/* Designer showcase */}
+        <DesignersSection />
 
       </div>
 

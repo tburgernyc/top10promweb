@@ -105,12 +105,12 @@ export function TrustSection() {
           <div>
             <p className="text-[10px] text-gold/70 font-semibold tracking-[0.2em] uppercase mb-2">Featured Labels</p>
             <div className="flex flex-wrap gap-1.5">
-              {['Jovani', 'Sherri Hill', 'La Femme', 'Mac Duggal', 'Terani', 'Faviana', 'Ellie Wilde'].map((d) => (
+              {['Johnathan Kayne', 'Ashley Lauren', 'Jessica Angel', 'Kate Parker', 'Chandalier'].map((d) => (
                 <span key={d} className="text-[11px] text-platinum/60 bg-white/5 border border-white/8 rounded-full px-2.5 py-0.5">
                   {d}
                 </span>
               ))}
-              <span className="text-[11px] text-gold bg-gold/10 border border-gold/20 rounded-full px-2.5 py-0.5">+8 more</span>
+              <span className="text-[11px] text-gold bg-gold/10 border border-gold/20 rounded-full px-2.5 py-0.5">+ 2Cute</span>
             </div>
           </div>
           <p className="text-platinum/40 text-xs mt-4 leading-relaxed">

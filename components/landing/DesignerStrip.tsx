@@ -1,9 +1,9 @@
 'use client'
 
 const DESIGNERS = [
-  'Jovani', 'Sherri Hill', 'La Femme', 'Mac Duggal', 'Terani Couture',
-  'Faviana', 'Ellie Wilde', 'Portia & Scarlett', 'Vienna', 'Alyce Paris',
-  'Morilee', 'Jasz Couture', 'Amarra', 'Ava Presley', 'Rachel Allan',
+  'Johnathan Kayne', 'Ashley Lauren', 'Jessica Angel', 'Kate Parker', 'Chandalier',
+  '2Cute Homecoming', 'Johnathan Kayne', 'Ashley Lauren', 'Jessica Angel', 'Kate Parker',
+  'Chandalier', '2Cute Homecoming', 'Johnathan Kayne', 'Ashley Lauren', 'Jessica Angel',
 ]
 
 // Duplicate for seamless loop
