@@ -2,68 +2,99 @@
 
 import { motion, useReducedMotion } from 'motion/react'
 import Link from 'next/link'
-import { ShieldCheck, Sparkles } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { ShieldCheck } from 'lucide-react'
+
+const PILLARS = [
+  { num: '01', title: 'Reserve Your Dress', body: 'Choose from 1,000+ styles and lock it in. Your selection is tied to your school.' },
+  { num: '02', title: 'School-Wide Lock', body: 'No other student at your school can book the same dress for the same prom night.' },
+  { num: '03', title: 'Walk In Confident', body: 'Guaranteed exclusivity. Show up knowing you are the only one in your dress.' },
+]
 
 export function NoDuplicatePromo() {
   const shouldReduce = useReducedMotion()
 
   return (
-    <section className="relative overflow-hidden rounded-2xl glass-heavy border border-gold/20 px-6 py-10 sm:px-10 sm:py-14 text-center">
-      {/* Background glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(212,175,55,0.12) 0%, transparent 70%)',
-        }}
-      />
+    <section className="relative overflow-hidden rounded-3xl border border-gold/15"
+      style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.06) 0%, rgba(5,5,5,0.95) 50%, rgba(212,175,55,0.04) 100%)' }}
+    >
+      {/* Corner glow */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse 70% 60% at 100% 100%, rgba(212,175,55,0.10) 0%, transparent 65%)' }} />
 
-      <motion.div
-        initial={shouldReduce ? {} : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ type: 'spring', stiffness: 260, damping: 28 }}
-        className="relative z-10 space-y-5"
-      >
-        <div className="flex items-center justify-center gap-2">
-          <ShieldCheck size={20} className="text-gold" />
-          <span className="text-gold text-sm font-semibold tracking-wider uppercase">
-            The No-Duplicate Guarantee
-          </span>
-          <Sparkles size={16} className="text-gold" />
+      <div className="relative z-10 grid lg:grid-cols-2 gap-0">
+
+        {/* Left — headline */}
+        <div className="px-8 py-12 sm:px-12 sm:py-16 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-white/8">
+          <motion.div
+            initial={shouldReduce ? {} : { opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+          >
+            <div className="flex items-center gap-2 mb-6">
+              <ShieldCheck size={16} className="text-gold" />
+              <span className="text-gold text-[11px] font-semibold tracking-[0.22em] uppercase">The No-Duplicate Guarantee</span>
+            </div>
+
+            {/* Enormous zero */}
+            <div className="flex items-end gap-4 mb-4 leading-none">
+              <span
+                className="font-black text-gold select-none"
+                style={{ fontSize: 'clamp(6rem, 16vw, 11rem)', lineHeight: 0.85, opacity: 0.9 }}
+              >
+                0
+              </span>
+              <div className="pb-3">
+                <p className="text-ivory/90 text-xl sm:text-2xl font-bold leading-tight">
+                  duplicate<br />dresses.<br />
+                  <span className="text-platinum/60 font-normal text-base">Ever.</span>
+                </p>
+              </div>
+            </div>
+
+            <p className="text-platinum/65 text-sm leading-relaxed max-w-sm mt-4">
+              When you book with Top 10 Prom, your dress is exclusively yours at
+              your school for prom night. No exceptions.
+            </p>
+          </motion.div>
         </div>
 
-        <h2 className="text-3xl sm:text-4xl font-bold text-ivory leading-tight max-w-xl mx-auto">
-          Be the <span className="text-gold">Only One</span> in Your Dress
-        </h2>
+        {/* Right — 3 pillars + CTA */}
+        <div className="px-8 py-12 sm:px-12 sm:py-16 flex flex-col justify-between gap-8">
+          <div className="space-y-6">
+            {PILLARS.map(({ num, title, body }, i) => (
+              <motion.div
+                key={num}
+                initial={shouldReduce ? {} : { opacity: 0, x: 24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ type: 'spring', stiffness: 260, damping: 28, delay: i * 0.08 }}
+                className="flex gap-4"
+              >
+                <span className="text-[11px] font-black text-gold/50 tracking-widest mt-0.5 shrink-0 w-6">{num}</span>
+                <div>
+                  <h3 className="text-ivory font-semibold text-sm mb-1">{title}</h3>
+                  <p className="text-platinum/55 text-xs leading-relaxed">{body}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-        <p className="text-platinum text-sm sm:text-base max-w-md mx-auto leading-relaxed">
-          When you reserve a dress at Top 10 Prom, no other student at your school
-          can book the same one for the same night. Your moment is truly yours.
-        </p>
-
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-          {['One dress per school', 'Per prom night', 'Guaranteed'].map((item, i) => (
-            <motion.div
-              key={item}
-              initial={shouldReduce ? {} : { opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ type: 'spring', stiffness: 300, damping: 26, delay: i * 0.08 }}
-              className="flex items-center gap-1.5 text-xs text-gold/80 bg-gold/10 border border-gold/20 rounded-full px-3 py-1"
+          <motion.div
+            initial={shouldReduce ? {} : { opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', stiffness: 280, damping: 26, delay: 0.3 }}
+          >
+            <Link
+              href="/catalog"
+              className="inline-flex items-center justify-center w-full sm:w-auto font-semibold text-sm px-8 py-4 rounded-2xl bg-gold text-onyx hover:bg-[#c9a227] active:scale-[0.97] transition-all"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-gold" />
-              {item}
-            </motion.div>
-          ))}
+              Shop Your Exclusive Look
+            </Link>
+          </motion.div>
         </div>
-
-        <Link href="/catalog">
-          <Button variant="primary" size="lg" className="mt-2">
-            Shop Your One-of-a-Kind Look
-          </Button>
-        </Link>
-      </motion.div>
+      </div>
     </section>
   )
 }

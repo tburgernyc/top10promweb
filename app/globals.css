@@ -43,6 +43,18 @@ body {
   .shimmer { animation: none; }
 }
 
+/* Marquee — designer strip */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 28s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
 /* Glass surface classes — two variants only, no others */
 .glass-light {
   background-color: rgb(255 255 255 / 0.05);

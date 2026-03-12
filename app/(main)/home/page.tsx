@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { Hero } from '@/components/landing/Hero'
-import { NoDuplicatePromo } from '@/components/landing/NoDuplicatePromo'
+import { StatsBar } from '@/components/landing/StatsBar'
 import { FeaturedDresses } from '@/components/landing/FeaturedDresses'
+import { NoDuplicatePromo } from '@/components/landing/NoDuplicatePromo'
 import { TrustSection } from '@/components/landing/TrustSection'
+import { DesignerStrip } from '@/components/landing/DesignerStrip'
 
 export const metadata: Metadata = {
   title: 'Top 10 Prom | Digital Showroom',
@@ -13,19 +15,32 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   return (
     <div className="min-h-dvh pb-24">
-      {/* Hero — full viewport */}
+
+      {/* Hero — full viewport video parallax */}
       <Hero />
 
-      {/* NoDuplicate promo — ABOVE FOLD (directly after hero) */}
-      <div className="max-w-3xl mx-auto px-4 -mt-8 relative z-10">
+      {/* Stats strip — glass bar anchored directly below hero */}
+      <StatsBar />
+
+      {/* Main content */}
+      <div className="max-w-7xl mx-auto px-4 mt-20 space-y-24">
+
+        {/* Featured dress grid */}
+        <FeaturedDresses />
+
+        {/* No-Duplicate guarantee — editorial split */}
         <NoDuplicatePromo />
+
+        {/* Why Top 10 Prom — bento grid */}
+        <TrustSection />
+
       </div>
 
-      {/* Featured dresses — nearest store context handled client-side via Suspense */}
-      <div className="max-w-7xl mx-auto px-4 mt-16 space-y-16">
-        <FeaturedDresses />
-        <TrustSection />
+      {/* Designer brand marquee — full bleed */}
+      <div className="mt-24">
+        <DesignerStrip />
       </div>
+
     </div>
   )
 }
