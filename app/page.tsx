@@ -1,71 +1,54 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import dynamic from 'next/dynamic'
-import { RunwayFallback } from '@/components/runway/RunwayFallback'
-
-// 3D scene: dynamically imported, NO SSR
-const RunwayScene = dynamic(
-  () =>
-    import('@/components/runway/RunwayScene').then((m) => ({
-      default: m.RunwayScene,
-    })),
-  {
-    ssr: false,
-    loading: () => (
-      // Loading state: onyx bg + centered logo + gold progress ring
-      <div className="w-full h-dvh bg-onyx flex flex-col items-center justify-center gap-6">
-        <p className="text-gold text-3xl font-bold tracking-[0.3em]">TOP 10 PROM</p>
-        <div
-          className="w-12 h-12 rounded-full border-2 border-gold/20 border-t-gold animate-spin"
-          aria-label="Loading 3D runway…"
-          role="status"
-        />
-      </div>
-    ),
-  }
-)
+import { SplashOverlay } from '@/components/splash/SplashOverlay'
 
 export default function SplashPage() {
   const router = useRouter()
-  const [ready, setReady] = useState(false)
-  const [useWebGL, setUseWebGL] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     // Returning visitor — skip directly to home
     if (sessionStorage.getItem('has_entered')) {
       router.replace('/home')
-      return
     }
-
-    // WebGL2 detection
-    let webGLSupported = false
-    try {
-      const canvas = document.createElement('canvas')
-      webGLSupported = !!(
-        canvas.getContext('webgl2') ||
-        canvas.getContext('webgl') ||
-        (canvas.getContext as (id: string) => unknown | null)('experimental-webgl')
-      )
-    } catch {
-      webGLSupported = false
-    }
-
-    const mobile = window.innerWidth < 768
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    // Use 3D scene only when: WebGL available, no reduced motion preference
-    setUseWebGL(webGLSupported && !reducedMotion)
-    setIsMobile(mobile)
-    setReady(true)
   }, [router])
 
-  // Blank while checking sessionStorage (avoids flash of splash on return visits)
-  if (!ready) return null
+  return (
+    <div className="relative w-full h-dvh overflow-hidden bg-onyx">
 
-  if (!useWebGL) return <RunwayFallback />
+      {/* Full-screen video background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="/video/hero.mp4" type="video/mp4" />
+      </video>
 
-  return <RunwayScene isMobile={isMobile} />
+      {/* Multi-stop dark scrim — keeps text readable over any video frame */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'linear-gradient(to bottom, rgba(5,5,5,0.45) 0%, rgba(5,5,5,0.20) 40%, rgba(5,5,5,0.55) 80%, rgba(5,5,5,0.80) 100%)',
+        }}
+      />
+
+      {/* Gold vignette edge */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 55%, rgba(5,5,5,0.65) 100%)',
+        }}
+      />
+
+      {/* 2D overlay — logo, event selector, Enter CTA */}
+      <SplashOverlay />
+    </div>
+  )
 }
