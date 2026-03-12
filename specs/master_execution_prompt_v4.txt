@@ -1,0 +1,144 @@
+/clear
+
+# MISSION
+Build Top 10 Prom Phase 1 Digital Showroom: multi-tenant franchise platform (5+ boutique locations). Next.js 16, React 19, Tailwind 3.4.17, Motion 12, Supabase, Vercel AI SDK. Deploy to Vercel Edge Network. No Docker.
+
+# HARD CONSTRAINTS
+- 'use cache' directive MUST be first line of file (before all imports)
+- 'use client' pushed as deep as possible in the component tree
+- All animations: spring physics ONLY (no linear, no tween)
+- All animations: MUST respect prefers-reduced-motion via useReducedMotion()
+- Tailwind custom tokens: onyx (#050505), gold (#D4AF37), platinum (#C0C0C0), ivory (#F5F5F5)
+- TWO glass classes only: glass-light (bg-white/5 border border-white/10, NO blur), glass-heavy (bg-black/60 backdrop-blur-md border border-white/10)
+- backdrop-blur is ONLY permitted on glass-heavy surfaces
+- No src/ directory. App Router at project root.
+- No Lenis. Use CSS scroll-behavior: smooth on html element.
+- No custom cursor. Permanently removed.
+- useActionState (NOT useFormState — deprecated in React 19 final)
+- Mobile-first: BottomNav with 5 persistent tabs (Home, Catalog, Fitting Room, Book, Profile)
+- Multi-tenant: ALL database queries scoped to active boutique context
+- Location-scoped RLS on ALL staff/admin operations
+- Skeleton components must use min-h (not fixed h-) to prevent layout shifts
+- Product images: minimum 4 per dress stored as JSONB array
+- Dual notifications: booking confirmations sent to BOTH customer AND parent/guardian
+
+# DATABASE TABLES (Multi-Tenant Franchise)
+Core: profiles (with role enum), dresses (with images JSONB array + video_url + size_chart JSONB), boutiques (with google_calendar_id + timezone), wishlist, fitting_room_sessions, availability_inquiries
+Franchise (NEW): boutique_staff, dress_inventory, boutique_settings, dress_reservations, social_votes, platform_analytics
+All RLS uses (select auth.uid()). Staff ops scoped via boutique_staff join.
+
+# TOOLS
+TaskMaster MCP is configured. PRD is at .taskmaster/docs/prd.txt
+Hooks are at .claude/hooks.json — do NOT bypass or circumvent hooks.
+
+# ERROR RECOVERY
+- API rate limit: implement exponential backoff, do not fail silently
+- Missing env var: skip the dependent feature, log a clear warning, continue build
+- Type error: fix immediately, NEVER proceed with TypeScript errors
+- Build failure: run diagnostics, identify root cause, fix, re-run before continuing
+- Supabase migration error: check for existing tables/columns, use IF NOT EXISTS
+
+# EXECUTION PROTOCOL
+Execute all steps within each phase AUTONOMOUSLY.
+PAUSE only at phase boundaries for my review.
+Run npm run lint && npx tsc --noEmit at the end of every phase.
+
+## PHASE 1A: Foundation & Data Layer (Files 1-15)
+1. Parse PRD: task-master parse-prd .taskmaster/docs/prd.txt
+2. Review generated tasks.json. Output brief summary of planned steps.
+3. Scaffold base configuration:
+   - package.json (pin tailwindcss@3.4.17, NO Lenis, NO @tailwindcss/postcss)
+   - postcss.config.mjs (Tailwind v3 plugins: tailwindcss + autoprefixer)
+   - tailwind.config.ts (Dark Luxury palette tokens, 2 glass shadow tokens, shimmer keyframe)
+   - app/globals.css (@tailwind directives, glass-light + glass-heavy, scroll-behavior: smooth, reduced-motion reset)
+   - .env.local (all vars including NEXT_PUBLIC_DEFAULT_BOUTIQUE_SLUG)
+   - tsconfig.json (strict, path aliases)
+4. Setup Supabase data clients (browser + server + middleware)
+5. Setup Gemini client (location-aware Aria system prompt)
+6. Run ALL database migrations:
+   - 0001: Core tables (profiles with role, dresses with images/video/size_chart, boutiques with calendar/timezone)
+   - 0002: Franchise tables (boutique_staff, dress_inventory, boutique_settings, dress_reservations, social_votes, platform_analytics)
+   - 0003: All RLS policies with location-scoping
+7. Seed: 10 dresses (4+ images each), 5 boutiques, sample inventory, 2 staff
+8. Run: npm run lint && npx tsc --noEmit
+9. PAUSE — await my review before proceeding.
+
+## PHASE 1B: Core Customer Journey (Files 16-50)
+- TypeScript types (database.ts generated, index.ts app types, admin.ts admin types)
+- Zod validation schemas (availability, booking with school/date, auth, admin)
+- Zustand stores (shopStore with persist + boutique context, adminStore)
+- UI Primitives: Button, Input, Badge, Modal, Drawer, Tooltip, Skeleton, Toast, Carousel
+- Animation utilities: PageTransition, FadeIn, StaggerChildren (all with reduced-motion)
+- Global layout: Navbar (with StoreSelector), BottomNav (NEW - mobile 5-tab), Footer, FittingRoomWidget, ThemeProvider, app/layout.tsx
+- Catalog components: DressCard (video hover, duplicate badge), DressCardGrid (lazy+blur), FilterBar (store availability filter), DressDetailPanel (multi-image, 7/5 split), AvailabilityForm (parent fields), FittingRoomSession (swipe-to-remove), DuplicateCheck (NEW - THE MOAT), SizeGuide (NEW)
+- Run lint + tsc. PAUSE.
+
+## PHASE 1C: Booking Engine & Auth (Files 51-72)
+- BookingWizard (5 steps, useActionState NOT useFormState):
+  - Step1: Select dress from fitting room
+  - Step2: Select store with distance
+  - Step3: Date/time filtered by boutique_settings
+  - Step4: Contact + PARENT contact + school name + prom date
+  - Step5: Confirm → creates inquiry + reservation + dual emails + calendar event
+- BookingConfirmation (success animation, calendar links)
+- Auth pages (login, signup, logout) with role-based redirects
+- AuthGuard with requiredRole prop
+- Customer dashboard (appointments, wishlist, reservations, profile)
+- API routes (availability, calendar, fitting-room)
+- Run lint + tsc. PAUSE.
+
+## PHASE 1D: Social & Engagement (Files 73-85) — ALL NEW
+- Social sharing suite:
+  - ShareFittingRoom (share link + QR + social buttons)
+  - VoteOnDress (thumbs up/down, Supabase realtime, no auth for voters)
+  - ShareWithParent (email with Approve & Book CTA)
+  - OG Image Generator (api/og/route.tsx via @vercel/og, branded gold frame)
+  - Public share page (app/share/[token]/page.tsx)
+- Aria AI Concierge (button, panel, bubble, api/chat/route.ts)
+- Location-aware features:
+  - StoreSelector (navbar dropdown, auto-detect, persist)
+  - NearestStorePrompt (first-visit modal)
+  - CrossLocationBadge ('Available at [Store] - X mi')
+  - Geolocation utility (haversine distance, sort by proximity)
+- Run lint + tsc. PAUSE.
+
+## PHASE 1E: Landing & Content Pages (Files 86-95)
+- Landing page: Hero, FeaturedDresses (nearest store), NoDuplicatePromo (NEW - 'Be the Only One' - ABOVE FOLD), TrustSection
+- Catalog page (StoreSelector + FilterBar + Grid, server load scoped to boutique)
+- Dress detail page ('use cache' FIRST LINE, multi-image, DuplicateCheck, SizeGuide, Book CTA)
+- Boutique pages (card list + Google Maps links, individual store + inventory)
+- Booking entry page
+- Run lint + tsc. PAUSE.
+
+## PHASE 1F: Franchise Admin Dashboard (Files 96-114) — ALL NEW
+- Admin layout + sidebar (role-gated: store_admin sees 1 store, platform_admin sees all)
+- Store dashboard: today's appointments, pending inquiries, popular dresses, metrics
+- Analytics cards, appointment list, recent inquiries, popular dresses
+- Inventory management: table with inline edit, add-dress-to-store modal
+- Appointment calendar (week/day, color-coded status)
+- Reservation registry (backend for no-duplicate-dress feature)
+- Staff management (invite via email, auto-assign to boutique)
+- Boutique settings (hours, lead time, max appointments, duration, auto-confirm)
+- Admin API routes (inventory, reservations, staff, analytics)
+- Run lint + tsc. PAUSE.
+
+## PHASE 1G: Error Handling, PWA & Deployment (Files 115-128)
+- Error pages (404, error boundary, loading)
+- Booking confirmation page
+- PWA manifest + service worker
+- next.config.ts (images, AVIF/WebP, Turbopack, security headers, PWA)
+- vercel.json, .env.example
+- Final type generation
+- Font manifest, .claude/hooks.json (lint + tsc + Lighthouse 90+ gate)
+- generate-types.sh, wishlist Server Actions
+- Run full build. Run Lighthouse. Performance score MUST be 90+.
+- PAUSE — final review.
+
+# RULES OF ENGAGEMENT
+- No assumptions. If unclear on API limits, visual breakpoints, or data schema edge cases → halt and ask.
+- Component isolation: Server Components for data + SEO. Client Components ONLY for state + interactivity.
+- Every client component consuming Zustand MUST implement the isHydrated pattern (useEffect + skeleton fallback).
+- Every useCallback and useMemo MUST have a complete dependency array. No empty arrays unless truly constant.
+- Test on mobile viewport (375px) as primary target. Desktop is secondary.
+
+Confirm understanding by stating: "SYSTEM ALIGNED. AWAITING COMMAND TO INITIATE PRD PARSING."

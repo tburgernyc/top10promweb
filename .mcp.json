@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "task-master-ai": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "task-master-ai@latest"],
+      "env": {
+        "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyA6IjHStSVnTJq1--rTef2svDnt8nRIIvo",
+        "TASK_MASTER_TOOLS": "core"
+      }
+    }
+  }
+}

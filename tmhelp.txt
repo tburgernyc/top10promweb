@@ -1,0 +1,3 @@
+﻿[WARN] No configuration file found in project: C:\Users\tburg\OneDrive\Documents\top10promweb
+{"method":"notifications/message","params":{"data":{"message":"MCP Server connected: undefined"},"level":"info"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"data":{"message":"MCP session missing required sampling capabilities, providers not registered"},"level":"info"},"jsonrpc":"2.0"}

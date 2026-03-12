@@ -1,0 +1,154 @@
+# ============================================================
+# MASTER PROMPT ADDENDUM — Append to v4.0 Master Execution Prompt
+# Phases 2A (Wedding) + 2B (3D Runway Splash)
+# ============================================================
+
+# ADDITIONAL CONSTRAINTS (append to HARD CONSTRAINTS section)
+- Event types: prom AND wedding. All catalog queries support event_type filtering.
+- dresses.event_types is a JSONB array (allows multi-event: ["prom","wedding"])
+- dress_reservations.school_name: REQUIRED for prom, stores bride_name for wedding
+- Booking wizard starts with Step0SelectEvent (prom vs wedding cards)
+- Wedding flow adds bridal party coordination (group appointments)
+- Root / is the 3D runway splash. Main app lives under (main) route group.
+- 3D scene: dynamically imported, NO SSR, lazy loaded
+- Three.js version MUST match @react-three/fiber peer dependency (NOT r128)
+- Static fallback required for: no WebGL, prefers-reduced-motion, load failure
+- SessionStorage 'has_entered' flag: returning visitors skip splash
+
+# ADDITIONAL PACKAGES (append to package.json in Phase 1A)
+- @react-three/fiber (latest stable, v9.x)
+- @react-three/drei (latest stable)
+- @react-three/postprocessing (latest stable)
+- three (MATCH R3F peer dep — check docs, do NOT assume version)
+
+# ============================================================
+# PHASE 2A: Wedding Expansion (Files 129-141)
+# Execute AFTER Phase 1G is complete and reviewed.
+# ============================================================
+
+1. Run migration 0004_wedding_expansion.sql:
+   - Add event_types JSONB to dresses table
+   - Add event_type to dress_reservations, availability_inquiries, fitting_room_sessions
+   - Make school_name nullable on dress_reservations
+   - Create bridal_parties + bridal_party_members tables
+   - All RLS policies + indexes
+
+2. Update seed data:
+   - Tag existing 10 dresses with event_types: 6 as ["prom"], 2 as ["wedding"], 2 as ["prom","wedding"]
+   - Add 4 wedding-specific dress records with bridal images
+
+3. Build wedding landing page:
+   - app/(main)/wedding/page.tsx: Wedding-specific hero, catalog filtered to wedding, "Coordinate Your Party" CTA
+   - components/wedding/BridalHero.tsx: Full-viewport editorial bridal imagery, softer gold tones
+   - components/wedding/WeddingDressGrid.tsx: DressCardGrid wrapper with wedding filters (silhouette, neckline, sleeve, train)
+
+4. Build prom landing page:
+   - app/(main)/prom/page.tsx: Prom-specific landing, no-duplicate-dress promo prominent, catalog pre-filtered to prom
+
+5. Build Bridal Party Manager:
+   - app/(main)/wedding/bridal-party/page.tsx: Auth-gated. Create party form.
+   - components/wedding/BridalPartyForm.tsx: bride name, date, venue, size, color scheme, notes. useActionState.
+   - components/wedding/BridalPartyManager.tsx: Member list dashboard. Add/remove members. Assign dresses. Send invites via Resend.
+   - components/wedding/BridalPartyMemberCard.tsx: Per-member card with role, dress, size, status. Inline actions.
+
+6. Build shared bridal party page:
+   - app/(main)/wedding/bridal-party/[token]/page.tsx: Public. Shows party details, suggested dresses in color scheme, vote on dresses, book fitting CTA.
+
+7. Modify booking wizard:
+   - components/booking/steps/Step0SelectEvent.tsx: NEW first step. Two cards: Prom / Wedding. Sets event_type context.
+   - components/wedding/WeddingBookingAdapter.tsx: Injects wedding fields (bride name, date, party link, group size). Auto-adjusts appointment duration.
+
+8. Build API routes:
+   - app/api/bridal-party/route.ts: CRUD for bridal_parties. Auth-gated create/update.
+   - app/api/bridal-party/members/route.ts: CRUD for members. Resend invite on POST.
+
+9. Update Aria system prompt:
+   - Aria must detect event context (prom vs wedding) and adjust language
+   - Prom: casual, teen-friendly, emphasis on uniqueness
+   - Wedding: professional, sophisticated, emphasis on coordination
+
+10. Run: npm run lint && npx tsc --noEmit
+11. PAUSE for review.
+
+# ============================================================
+# PHASE 2B: 3D Runway Splash (Files 142-147)
+# Execute AFTER Phase 2A is complete and reviewed.
+# ============================================================
+
+1. Install R3F packages:
+   - Check @react-three/fiber docs for correct three.js peer version
+   - npm install @react-three/fiber @react-three/drei @react-three/postprocessing three@[CORRECT_VERSION]
+
+2. Restructure routing:
+   - Move current app/page.tsx → app/(main)/page.tsx
+   - Move layout chrome (Navbar, BottomNav, Footer, FittingRoomWidget, PageTransition, Aria) from app/layout.tsx → app/(main)/layout.tsx
+   - app/layout.tsx becomes minimal: html, body, fonts, ThemeProvider ONLY
+   - Verify all existing routes still work under (main) group
+
+3. Build splash page:
+   - app/page.tsx: SessionStorage check → if 'has_entered', redirect to /(main). Otherwise render splash.
+   - Dynamic import: const RunwayScene = dynamic(() => import('@/components/runway/RunwayScene'), { ssr: false })
+   - 2D overlay positioned absolute over Canvas:
+     * Logo: "TOP 10 PROM" gold, centered top, fade in 1s
+     * Tagline: "Your Moment. Your Dress. Your Night." ivory, fade in 1.5s
+     * Event selector: Prom / Wedding pill buttons, glass-light, fade in 2s
+     * CTA: "Enter the Showroom" gold button, spring animation, fade in 2.5s
+     * Skip link: top-right "Skip to Showroom →" platinum, always visible
+     * Bottom: "5+ Boutique Locations Nationwide" platinum, fade in 3s
+   - On CTA click: set sessionStorage 'has_entered' + navigate to /(main)
+
+4. Build 3D scene components:
+   - components/runway/RunwayScene.tsx:
+     * Canvas: fov 45, camera [0, 1.6, 5], dpr [1, 2]
+     * <Environment preset="studio" />
+     * Key light: directional, #FFF5E6, intensity 1.2, position [5, 5, 5]
+     * Rim lights: 2x point, #E8E0FF, intensity 0.6, behind-left + behind-right
+     * Ambient: intensity 0.15
+     * Fog: linear, #050505, near 15, far 30
+     * Three <DressStation> at z=-2, z=-7, z=-12
+     * <CameraRig />
+     * Post-processing: Bloom (0.3, threshold 0.9), Vignette (0.3, 0.7), subtle film grain
+   
+   - components/runway/RunwayPlatform.tsx:
+     * Plane: 3 x 20, MeshPhysicalMaterial, metalness 0.9, roughness 0.1, color #1A1A1A
+     * Gold rails: BoxGeometry 0.02 x 0.02 x 20, emissive #D4AF37, emissiveIntensity 0.5
+   
+   - components/runway/DressStation.tsx:
+     * Props: position, modelUrl, spotlightColor
+     * useGLTF for model loading
+     * useFrame for y-rotation (0.003 rad/frame)
+     * SpotLight: intensity 2, angle 0.3, penumbra 0.5
+   
+   - components/runway/CameraRig.tsx:
+     * useFrame: dolly from z=5 to z=-5 over 12s (lerp)
+     * Subtle sine vertical bob: amplitude 0.02, freq 0.5Hz
+     * After 12s: enable OrbitControls (constrain azimuth ±45°, polar 60-90°, no zoom)
+     * useReducedMotion: skip animation, start at z=-2
+
+5. Build fallback:
+   - components/runway/RunwayFallback.tsx: Full-bleed AVIF image, same 2D overlay
+   - WebGL detection: check for WebGL2 context before Canvas mount
+   - Loading state: onyx bg + logo + gold progress ring while GLB downloads
+   - Mobile (< 768px): 1 DressStation only, no bloom/DOF post-processing
+
+6. Asset checklist (MUST be sourced before this phase):
+   - Mannequin GLB model (< 1.5MB, Draco compressed)
+   - 3x dress overlay GLB models (< 800KB each)
+   - Static fallback runway image (AVIF + WebP, < 500KB)
+   - Total 3D asset budget: < 5MB
+
+7. Performance validation:
+   - Splash page Lighthouse: 85+ (3D scenes are inherently heavier)
+   - Main app Lighthouse: 90+ (unchanged)
+   - Time to interactive on splash: < 3s on 4G
+   - Fallback must render < 500ms
+
+8. Run: npm run lint && npx tsc --noEmit
+9. Run full build + Lighthouse on both / and /(main)
+10. PAUSE for final review.
+
+# ============================================================
+# UPDATED CONFIRMATION
+# ============================================================
+# Replace the confirm line in the v4.0 prompt with:
+Confirm: "SYSTEM ALIGNED. 147 FILES. 9 PHASES. PROM + WEDDING + 3D RUNWAY. AWAITING COMMAND."

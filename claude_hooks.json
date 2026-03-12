@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "interceptor",
+            "command": "bash -c \"if echo '$TOOL_INPUT' | grep -qiE '(rm -rf|drop table|drop database|truncate|DELETE FROM.*WHERE 1|DELETE FROM.*WHERE true)'; then echo '{\\\"decision\\\": \\\"block\\\", \\\"reason\\\": \\\"Destructive command detected. Requires explicit user approval before execution.\\\"}'; else echo '{\\\"decision\\\": \\\"allow\\\"}'; fi\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "interceptor",
+            "command": "bash -c \"LINT_OUTPUT=$(npm run lint 2>&1); LINT_EXIT=$?; TSC_OUTPUT=$(npx tsc --noEmit 2>&1); TSC_EXIT=$?; if [ $LINT_EXIT -ne 0 ] || [ $TSC_EXIT -ne 0 ]; then echo '{\\\"ok\\\": false, \\\"reason\\\": \\\"Code quality gate failed. Fix lint/type errors before completing task.\\n'\"$LINT_OUTPUT\"'\\n'\"$TSC_OUTPUT\"'\\\"}'; else echo '{\\\"ok\\\": true}'; fi\""
+          }
+        ]
+      }
+    ]
+  }
+}
