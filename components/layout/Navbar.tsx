@@ -141,6 +141,7 @@ export function Navbar() {
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-6 text-sm text-platinum">
           <Link href="/catalog" className="hover:text-ivory transition-colors">Catalog</Link>
+          <Link href="/try-on" className="hover:text-ivory transition-colors text-gold/80 hover:text-gold">Virtual Try-On</Link>
           <Link href="/boutiques" className="hover:text-ivory transition-colors">Locations</Link>
           <Link href="/about" className="hover:text-ivory transition-colors">About</Link>
           <Link href="/book" className="hover:text-ivory transition-colors">Book Appointment</Link>
