@@ -1,5 +1,3 @@
-'use cache'
-
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { FittingRoomSession } from '@/components/catalog/FittingRoomSession'
@@ -16,10 +14,10 @@ export default async function FittingRoomPage() {
       <div className="max-w-5xl mx-auto px-4 pt-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-ivory">
-            My <span className="text-gold">Fitting Room</span>
+            Virtual <span className="text-gold">Fitting Room</span>
           </h1>
           <p className="text-platinum text-sm mt-1">
-            Your shortlisted dresses. When you&apos;re ready, book an appointment.
+            Try on your shortlisted dresses — upload a photo to see yourself in each look.
           </p>
         </div>
 
