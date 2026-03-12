@@ -115,7 +115,7 @@ export function Hero() {
       const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
       function onMouse(e: MouseEvent) {
-        const r = section.getBoundingClientRect()
+        const r = section!.getBoundingClientRect()
         mx = ((e.clientX - r.left) / r.width  - 0.5) * 2  // -1 → +1
         my = ((e.clientY - r.top)  / r.height - 0.5) * 2
       }
