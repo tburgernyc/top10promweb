@@ -26,7 +26,7 @@ export default function SplashPage() {
         aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="/video/hero.mp4" type="video/mp4" />
+        <source src="/video/splash.mp4" type="video/mp4" />
       </video>
 
       {/* Multi-stop dark scrim — keeps text readable over any video frame */}
