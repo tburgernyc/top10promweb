@@ -25,12 +25,13 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     <div className="min-h-dvh pb-24">
       <div className="max-w-7xl mx-auto px-4 pt-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-ivory">
+        <div className="mb-6 sm:mb-8">
+          <p className="text-[11px] text-gold font-semibold tracking-[0.22em] uppercase mb-1.5">Digital Showroom</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-ivory">
             The <span className="text-gold">Collection</span>
           </h1>
-          <p className="text-platinum text-sm mt-1">
-            Every dress is available to reserve — exclusively for your school.
+          <p className="text-platinum/70 text-sm mt-1">
+            Every dress reserved exclusively for your school.
           </p>
         </div>
 

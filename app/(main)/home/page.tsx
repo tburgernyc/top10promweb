@@ -25,7 +25,7 @@ export default async function HomePage() {
       <StatsBar />
 
       {/* Main content */}
-      <div className="max-w-7xl mx-auto px-4 mt-20 space-y-24">
+      <div className="max-w-7xl mx-auto px-4 mt-10 sm:mt-20 space-y-16 sm:space-y-24">
 
         {/* Featured dress grid */}
         <FeaturedDresses />
@@ -45,7 +45,7 @@ export default async function HomePage() {
       </div>
 
       {/* Designer brand marquee — full bleed */}
-      <div className="mt-24">
+      <div className="mt-16 sm:mt-24">
         <DesignerStrip />
       </div>
 

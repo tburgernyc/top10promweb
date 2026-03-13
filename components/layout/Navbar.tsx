@@ -150,13 +150,18 @@ export function Navbar() {
 
         {/* Right actions */}
         <div className="flex items-center gap-2">
-          <StoreSelector />
+          {/* Store selector — desktop only (mobile uses BottomNav + profile) */}
+          <div className="hidden md:block">
+            <StoreSelector />
+          </div>
+
           <UserMenu />
 
+          {/* Wishlist + Fitting Room — desktop only (duplicated in BottomNav on mobile) */}
           <Link
             href="/wishlist"
             aria-label={`Wishlist (${wishlistCount})`}
-            className="relative p-2 rounded-lg text-platinum hover:text-ivory hover:bg-white/5 transition-colors"
+            className="hidden md:block relative p-2 rounded-lg text-platinum hover:text-ivory hover:bg-white/5 transition-colors"
           >
             <Heart size={20} />
             {wishlistCount > 0 && (
@@ -169,7 +174,7 @@ export function Navbar() {
           <Link
             href="/fitting-room"
             aria-label={`Fitting Room (${fittingCount})`}
-            className="relative p-2 rounded-lg text-platinum hover:text-ivory hover:bg-white/5 transition-colors"
+            className="hidden md:block relative p-2 rounded-lg text-platinum hover:text-ivory hover:bg-white/5 transition-colors"
           >
             <Shirt size={20} />
             {fittingCount > 0 && (

@@ -95,7 +95,7 @@ export function ProfileClient({ profile, inquiries, reservations, userEmail }: P
           initial={shouldReduce ? {} : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={spring(0.05)}
-          className="grid grid-cols-4 gap-2"
+          className="grid grid-cols-2 sm:grid-cols-4 gap-2"
         >
           {[
             { icon: CalendarDays, label: 'Bookings', value: inquiries.length, href: undefined, onClick: () => setTab('appointments') },

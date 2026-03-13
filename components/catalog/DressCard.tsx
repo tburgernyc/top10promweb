@@ -104,7 +104,7 @@ export function DressCard({ dress, isDuplicate = false }: DressCardProps) {
             }}
             aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
             aria-pressed={isWishlisted}
-            className="absolute top-3 right-3 p-2 rounded-full glass-heavy text-ivory opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-3 right-3 p-2 rounded-full glass-heavy text-ivory opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
           >
             <Heart
               size={16}

@@ -146,45 +146,42 @@ export function Hero() {
         },
       })
 
-      // ── MOUSE 3D PARALLAX ──────────────────────────────────────────────────
-      let mx = 0, my = 0
-      let bgX = 0, bgY = 0
-      let obX = 0, obY = 0
-      let rwX = 0, rwY = 0
-      let rafId: number
+      // ── MOUSE 3D PARALLAX — desktop hover-capable devices only ─────────────
+      let rafId: number | undefined
+      const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
-      const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+      if (canHover) {
+        let mx = 0, my = 0
+        let bgX = 0, bgY = 0
+        let obX = 0, obY = 0
+        let rwX = 0, rwY = 0
 
-      function onMouse(e: MouseEvent) {
-        const r = section!.getBoundingClientRect()
-        mx = ((e.clientX - r.left) / r.width  - 0.5) * 2  // -1 → +1
-        my = ((e.clientY - r.top)  / r.height - 0.5) * 2
-      }
+        const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
-      function tick() {
-        // Smooth lerp toward target
-        bgX = lerp(bgX, mx * 14, 0.032)
-        bgY = lerp(bgY, my *  9, 0.032)
-        obX = lerp(obX, mx * 30, 0.050)
-        obY = lerp(obY, my * 20, 0.050)
-        rwX = lerp(rwX, mx * 50, 0.068)
-        rwY = lerp(rwY, my * 34, 0.068)
+        function onMouse(e: MouseEvent) {
+          const r = section!.getBoundingClientRect()
+          mx = ((e.clientX - r.left) / r.width  - 0.5) * 2  // -1 → +1
+          my = ((e.clientY - r.top)  / r.height - 0.5) * 2
+        }
 
-        // Background: subtle 3D perspective tilt
-        gsap.set(bgRef.current, {
-          rotateY:  bgX * 1.1,
-          rotateX: -bgY * 0.7,
-        })
-        // Bokeh orbs: 2D drift
-        gsap.set(bokehRef.current, { x: obX, y: obY })
-        // Runway: slightly faster drift
-        gsap.set(runwayRef.current, { x: rwX * 0.5, y: rwY * 0.3 })
+        function tick() {
+          bgX = lerp(bgX, mx * 14, 0.032)
+          bgY = lerp(bgY, my *  9, 0.032)
+          obX = lerp(obX, mx * 30, 0.050)
+          obY = lerp(obY, my * 20, 0.050)
+          rwX = lerp(rwX, mx * 50, 0.068)
+          rwY = lerp(rwY, my * 34, 0.068)
 
+          gsap.set(bgRef.current, { rotateY: bgX * 1.1, rotateX: -bgY * 0.7 })
+          gsap.set(bokehRef.current, { x: obX, y: obY })
+          gsap.set(runwayRef.current, { x: rwX * 0.5, y: rwY * 0.3 })
+
+          rafId = requestAnimationFrame(tick)
+        }
+
+        section.addEventListener('mousemove', onMouse, { passive: true })
         rafId = requestAnimationFrame(tick)
       }
-
-      section.addEventListener('mousemove', onMouse, { passive: true })
-      rafId = requestAnimationFrame(tick)
 
       // ── FLOATING PARTICLES (continuous) ────────────────────────────────────
       gsap.to('.hparticle', {
@@ -199,8 +196,7 @@ export function Hero() {
       })
 
       return () => {
-        section.removeEventListener('mousemove', onMouse)
-        cancelAnimationFrame(rafId)
+        if (rafId !== undefined) cancelAnimationFrame(rafId)
       }
     }, section)
 

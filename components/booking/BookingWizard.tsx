@@ -98,7 +98,7 @@ export function BookingWizard({ initialDressId }: BookingWizardProps) {
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto px-4 py-8 space-y-8">
+    <div className="w-full max-w-lg mx-auto px-4 py-5 sm:py-8 space-y-6 sm:space-y-8">
       <div className="space-y-4">
         {step > 0 && <BookingProgress currentStep={step} />}
         <h2 className="text-xl font-semibold text-ivory">{STEP_TITLES[step]}</h2>

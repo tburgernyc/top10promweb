@@ -53,7 +53,7 @@ export function BottomNav() {
                 )}
               </div>
 
-              <span className={isActive ? 'text-gold' : 'text-platinum/50'}>
+              <span className={['text-[11px]', isActive ? 'text-gold' : 'text-platinum/50'].join(' ')}>
                 {tab.label}
               </span>
 
