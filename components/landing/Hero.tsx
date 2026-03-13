@@ -47,6 +47,10 @@ export function Hero() {
     const section = sectionRef.current
     if (!section) return
 
+    // Detect fresh-enter transition from splash page
+    const fromSplash = sessionStorage.getItem('fresh_enter') === '1'
+    if (fromSplash) sessionStorage.removeItem('fresh_enter')
+
     // ── Reduced-motion: just show everything ────────────────────────────────
     if (shouldReduce) {
       gsap.set(
@@ -61,35 +65,72 @@ export function Hero() {
       // ── ENTRANCE TIMELINE ──────────────────────────────────────────────────
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
 
-      tl
-        // Atmosphere zooms in
-        .from(bgRef.current, { scale: 1.14, opacity: 0, duration: 2.2 })
-        .from(bokehRef.current, { scale: 0.82, opacity: 0, duration: 1.8 }, '<0.1')
-        // Runway lines draw up from bottom
-        .from('.rl', {
-          scaleY: 0,
-          opacity: 0,
-          transformOrigin: 'bottom center',
-          duration: 1.3,
-          stagger: 0.07,
-        }, '-=1.4')
-        .from('.rscan', { scaleX: 0, opacity: 0, transformOrigin: 'center', duration: 0.8, stagger: 0.1 }, '-=0.8')
-        // Badge drops in
-        .from('.hbadge', { y: -32, opacity: 0, duration: 0.65, ease: 'back.out(1.8)' }, '-=0.4')
-        // Title lines clip-reveal up
-        .from('.hl1', { y: 100, opacity: 0, duration: 0.9 }, '-=0.3')
-        .from('.hl2', { y: 100, opacity: 0, duration: 0.9 }, '-=0.72')
-        .from('.hl3', { y: 100, opacity: 0, duration: 0.9 }, '-=0.72')
-        // Subtext + CTAs + stats cascade
-        .from('.hsub',  { y: 26, opacity: 0, duration: 0.75 }, '-=0.55')
-        .from('.hcta',  { y: 20, opacity: 0, duration: 0.65, stagger: 0.13 }, '-=0.5')
-        .from('.hstat', { y: 16, opacity: 0, duration: 0.55, stagger: 0.10 }, '-=0.45')
-        // Particles pop in
-        .from('.hparticle', {
-          scale: 0, opacity: 0, duration: 1.1,
-          ease: 'back.out(2.2)',
-          stagger: { amount: 1.4, from: 'random' },
-        }, '-=0.9')
+      if (fromSplash) {
+        // ── CONTINUATION MODE: coming from splash curtain ──────────────────
+        // Page is behind the black curtain — fade it in cleanly then cascade content
+        gsap.set(section, { opacity: 0 })
+
+        tl
+          // Reveal from black — matches the curtain the splash just dropped
+          .to(section, { opacity: 1, duration: 0.5, ease: 'power2.out' })
+          // Atmosphere fades in (no scale zoom — continues from splash energy)
+          .from(bgRef.current, { opacity: 0, duration: 0.9 }, '<')
+          .from(bokehRef.current, { opacity: 0, scale: 0.94, duration: 0.9 }, '<0.05')
+          // Runway lines draw up
+          .from('.rl', {
+            scaleY: 0, opacity: 0, transformOrigin: 'bottom center',
+            duration: 0.75, stagger: 0.04,
+          }, '-=0.55')
+          .from('.rscan', { scaleX: 0, opacity: 0, duration: 0.5, stagger: 0.06 }, '-=0.45')
+          // Badge
+          .from('.hbadge', { y: -24, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, '-=0.3')
+          // Title lines wipe up — snappy, already warmed up from splash
+          .from('.hl1', { y: 70, opacity: 0, duration: 0.65 }, '-=0.25')
+          .from('.hl2', { y: 70, opacity: 0, duration: 0.65 }, '-=0.50')
+          .from('.hl3', { y: 70, opacity: 0, duration: 0.65 }, '-=0.50')
+          // Sub copy + CTAs + stats
+          .from('.hsub',  { y: 20, opacity: 0, duration: 0.5 }, '-=0.40')
+          .from('.hcta',  { y: 16, opacity: 0, duration: 0.45, stagger: 0.10 }, '-=0.38')
+          .from('.hstat', { y: 12, opacity: 0, duration: 0.40, stagger: 0.08 }, '-=0.32')
+          // Particles pop
+          .from('.hparticle', {
+            scale: 0, opacity: 0, duration: 0.9,
+            ease: 'back.out(2.2)',
+            stagger: { amount: 0.9, from: 'random' },
+          }, '-=0.55')
+
+      } else {
+        // ── COLD START: direct navigation / page refresh ───────────────────
+        tl
+          // Atmosphere zooms in
+          .from(bgRef.current, { scale: 1.14, opacity: 0, duration: 2.2 })
+          .from(bokehRef.current, { scale: 0.82, opacity: 0, duration: 1.8 }, '<0.1')
+          // Runway lines draw up from bottom
+          .from('.rl', {
+            scaleY: 0,
+            opacity: 0,
+            transformOrigin: 'bottom center',
+            duration: 1.3,
+            stagger: 0.07,
+          }, '-=1.4')
+          .from('.rscan', { scaleX: 0, opacity: 0, transformOrigin: 'center', duration: 0.8, stagger: 0.1 }, '-=0.8')
+          // Badge drops in
+          .from('.hbadge', { y: -32, opacity: 0, duration: 0.65, ease: 'back.out(1.8)' }, '-=0.4')
+          // Title lines clip-reveal up
+          .from('.hl1', { y: 100, opacity: 0, duration: 0.9 }, '-=0.3')
+          .from('.hl2', { y: 100, opacity: 0, duration: 0.9 }, '-=0.72')
+          .from('.hl3', { y: 100, opacity: 0, duration: 0.9 }, '-=0.72')
+          // Subtext + CTAs + stats cascade
+          .from('.hsub',  { y: 26, opacity: 0, duration: 0.75 }, '-=0.55')
+          .from('.hcta',  { y: 20, opacity: 0, duration: 0.65, stagger: 0.13 }, '-=0.5')
+          .from('.hstat', { y: 16, opacity: 0, duration: 0.55, stagger: 0.10 }, '-=0.45')
+          // Particles pop in
+          .from('.hparticle', {
+            scale: 0, opacity: 0, duration: 1.1,
+            ease: 'back.out(2.2)',
+            stagger: { amount: 1.4, from: 'random' },
+          }, '-=0.9')
+      }
 
       // ── SCROLL PARALLAX ────────────────────────────────────────────────────
       ScrollTrigger.create({
