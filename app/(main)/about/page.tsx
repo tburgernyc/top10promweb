@@ -10,7 +10,17 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-dvh pb-24">
+    <div className="relative min-h-dvh pb-24">
+
+      {/* Ambient video background */}
+      <div className="fixed inset-0 -z-10 pointer-events-none">
+        <video autoPlay muted loop playsInline aria-hidden="true"
+          className="w-full h-full object-cover opacity-[0.12]">
+          <source src="/video/splash.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0"
+          style={{ background: 'linear-gradient(to bottom, rgba(5,5,5,0.82) 0%, rgba(5,5,5,0.72) 40%, rgba(5,5,5,0.88) 100%)' }} />
+      </div>
       <div className="max-w-3xl mx-auto px-4 pt-10 space-y-16">
 
         {/* Hero */}
