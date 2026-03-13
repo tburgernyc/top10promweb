@@ -23,7 +23,7 @@ export function UserMenu() {
       .from('profiles')
       .select('role')
       .eq('id', userId)
-      .single()
+      .single() as { data: { role: string } | null }
     setRole(data?.role ?? null)
   }
 

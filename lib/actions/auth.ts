@@ -42,7 +42,7 @@ export async function loginAction(
       .from('profiles')
       .select('role')
       .eq('id', user.id)
-      .single()
+      .single() as { data: { role: string } | null }
 
     const ownerRoles = ['staff', 'store_admin', 'platform_admin']
     if (profile?.role && ownerRoles.includes(profile.role)) {
