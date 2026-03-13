@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { X, Shirt, ChevronLeft, ChevronRight, Upload, Camera, Download, ZoomIn, ShoppingBag } from 'lucide-react'
 import { useShopStore } from '@/lib/store/shopStore'
+import { STATIC_DRESSES } from '@/lib/data/dresses'
 import { Button } from '@/components/ui/Button'
 import { DressGridSkeleton } from '@/components/ui/Skeleton'
 import type { Dress, DressImage } from '@/types/index'
@@ -181,7 +182,16 @@ export function FittingRoomSession() {
 
     const supabase = createClient()
     supabase.from('dresses').select('*').in('id', fittingRoomIds).then(({ data }) => {
-      setDresses((data as Dress[]) ?? [])
+      const fetched = (data as Dress[]) ?? []
+      if (fetched.length > 0) {
+        setDresses(fetched)
+      } else {
+        // IDs came from static catalog — resolve them locally
+        const fromStatic = (STATIC_DRESSES as unknown as Dress[]).filter((d) =>
+          fittingRoomIds.includes(d.id)
+        )
+        setDresses(fromStatic)
+      }
       setLoading(false)
     })
   }, [fittingRoomIds, isHydrated])

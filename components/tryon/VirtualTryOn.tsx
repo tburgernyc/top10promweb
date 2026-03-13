@@ -6,9 +6,11 @@ import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import {
   Upload, Camera, X, ChevronLeft, ChevronRight,
-  Sparkles, ZoomIn, ZoomOut, Download, ShoppingBag, Plus,
+  Sparkles, ZoomIn, ZoomOut, Download, ShoppingBag, Plus, Check,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
+import { STATIC_DRESSES } from '@/lib/data/dresses'
+import { useShopStore } from '@/lib/store/shopStore'
 import { Button } from '@/components/ui/Button'
 import type { Dress, DressImage } from '@/types/index'
 
@@ -86,11 +88,13 @@ function PhotoZone({ photo, onPhoto, onClear }: {
 }
 
 // ── Dress picker panel ────────────────────────────────────────────────────────
-function DressPicker({ dresses, selectedIdx, onSelect, loading }: {
+function DressPicker({ dresses, selectedIdx, onSelect, loading, fittingRoomIds, onAddToFittingRoom }: {
   dresses: Dress[]
   selectedIdx: number
   onSelect: (i: number) => void
   loading: boolean
+  fittingRoomIds: string[]
+  onAddToFittingRoom: (dressId: string) => void
 }) {
   if (loading) return (
     <div className="flex items-center justify-center h-32 text-platinum/40 text-sm">Loading dresses…</div>
@@ -107,6 +111,7 @@ function DressPicker({ dresses, selectedIdx, onSelect, loading }: {
       {dresses.map((dress, i) => {
         const src = getPrimary(dress)
         const active = i === selectedIdx
+        const inRoom = fittingRoomIds.includes(dress.id)
         return (
           <button
             key={dress.id}
@@ -128,6 +133,19 @@ function DressPicker({ dresses, selectedIdx, onSelect, loading }: {
             {active && (
               <div className="absolute inset-0 bg-gold/10 pointer-events-none" />
             )}
+            {/* Add to fitting room button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); onAddToFittingRoom(dress.id) }}
+              aria-label={inRoom ? 'In fitting room' : 'Add to fitting room'}
+              className={[
+                'absolute top-1 right-1 p-1 rounded-full transition-all',
+                inRoom
+                  ? 'bg-gold/30 border border-gold/50 text-gold opacity-100'
+                  : 'glass-heavy text-ivory opacity-0 group-hover:opacity-100 hover:bg-gold/20',
+              ].join(' ')}
+            >
+              {inRoom ? <Check size={10} /> : <Plus size={10} />}
+            </button>
             <div className="absolute bottom-0 inset-x-0 px-1.5 py-1 bg-gradient-to-t from-black/80 to-transparent">
               <p className="text-[9px] text-ivory truncate font-medium">{dress.name}</p>
             </div>
@@ -147,17 +165,30 @@ export function VirtualTryOn() {
   const [selectedIdx, setSelectedIdx] = useState(0)
   const [zoom, setZoom] = useState(false)
 
+  const isHydrated = useShopStore((s) => s._hasHydrated)
+  const fittingRoomIds = useShopStore((s) => s.fittingRoomIds)
+  const addToFittingRoom = useShopStore((s) => s.addToFittingRoom)
+  const isInFittingRoom = useShopStore((s) => s.isInFittingRoom)
+
   useEffect(() => {
     const supabase = createClient()
-    supabase.from('dresses').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(24)
+    supabase
+      .from('dresses')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(48)
       .then(({ data }) => {
-        setDresses((data as Dress[]) ?? [])
+        const rows = (data as Dress[]) ?? []
+        // Fall back to static catalog if Supabase has no data
+        setDresses(rows.length > 0 ? rows : (STATIC_DRESSES as unknown as Dress[]))
         setLoading(false)
       })
   }, [])
 
   const selected = dresses[selectedIdx] ?? null
   const selectedSrc = selected ? getPrimary(selected) : null
+  const selectedInRoom = selected ? isInFittingRoom(selected.id) : false
 
   function prev() { setSelectedIdx((i) => (i - 1 + dresses.length) % dresses.length) }
   function next() { setSelectedIdx((i) => (i + 1) % dresses.length) }
@@ -187,16 +218,37 @@ export function VirtualTryOn() {
         ))}
       </div>
 
-      {/* Main try-on area */}
+      {/* Main try-on area
+          Mobile order: picker (1) → photo (2) → viewer (3)
+          Desktop order: photo | viewer | picker (natural column order) */}
       <div className="grid lg:grid-cols-[1fr_1fr_280px] gap-4">
 
+        {/* Dress picker sidebar — first on mobile, last column on desktop */}
+        <div className="order-first lg:order-last glass-light rounded-3xl p-5 flex flex-col gap-4 min-h-[200px] lg:min-h-[420px]">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] text-platinum/50 tracking-[0.2em] uppercase font-semibold">Choose a Dress</p>
+            <Link href="/catalog" className="text-[10px] text-gold hover:text-gold/80 transition-colors flex items-center gap-1">
+              More <Plus size={10} />
+            </Link>
+          </div>
+
+          <DressPicker
+            dresses={dresses}
+            selectedIdx={selectedIdx}
+            onSelect={setSelectedIdx}
+            loading={loading}
+            fittingRoomIds={isHydrated ? fittingRoomIds : []}
+            onAddToFittingRoom={addToFittingRoom}
+          />
+        </div>
+
         {/* Photo panel */}
-        <div className="glass-light rounded-3xl p-5 flex flex-col min-h-[420px]">
+        <div className="order-2 lg:order-first glass-light rounded-3xl p-5 flex flex-col min-h-[420px]">
           <PhotoZone photo={photo} onPhoto={setPhoto} onClear={() => setPhoto(null)} />
         </div>
 
         {/* Dress viewer */}
-        <div className="glass-light rounded-3xl p-5 flex flex-col min-h-[420px]">
+        <div className="order-3 lg:order-2 glass-light rounded-3xl p-5 flex flex-col min-h-[420px]">
           <p className="text-[10px] text-platinum/50 tracking-[0.2em] uppercase font-semibold mb-3">Selected Dress</p>
 
           <div className="relative flex-1 rounded-2xl overflow-hidden group min-h-[320px]">
@@ -216,7 +268,9 @@ export function VirtualTryOn() {
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
                   <Sparkles size={32} className="text-gold/30" />
-                  <p className="text-platinum/40 text-sm">Select a dress →</p>
+                  <p className="text-platinum/40 text-sm text-center px-4">
+                    {loading ? 'Loading dresses…' : 'Select a dress from the list'}
+                  </p>
                 </div>
               )}
             </AnimatePresence>
@@ -251,18 +305,6 @@ export function VirtualTryOn() {
             </button>
           </div>
         </div>
-
-        {/* Dress picker sidebar */}
-        <div className="glass-light rounded-3xl p-5 flex flex-col gap-4 min-h-[420px]">
-          <div className="flex items-center justify-between">
-            <p className="text-[10px] text-platinum/50 tracking-[0.2em] uppercase font-semibold">Choose a Dress</p>
-            <Link href="/catalog" className="text-[10px] text-gold hover:text-gold/80 transition-colors flex items-center gap-1">
-              More <Plus size={10} />
-            </Link>
-          </div>
-
-          <DressPicker dresses={dresses} selectedIdx={selectedIdx} onSelect={setSelectedIdx} loading={loading} />
-        </div>
       </div>
 
       {/* Action bar */}
@@ -270,16 +312,27 @@ export function VirtualTryOn() {
         <p className="text-xs text-platinum/40">
           Your photo stays on your device — nothing is uploaded to our servers.
         </p>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {photo && (
             <Button variant="secondary" size="sm" onClick={handleDownload}>
               <Download size={14} /> Save comparison
             </Button>
           )}
+          {selected && isHydrated && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => addToFittingRoom(selected.id)}
+              disabled={selectedInRoom}
+            >
+              {selectedInRoom ? <Check size={14} /> : <Plus size={14} />}
+              {selectedInRoom ? 'In Fitting Room' : 'Add to Fitting Room'}
+            </Button>
+          )}
           {selected && (
             <Link href={`/catalog/${selected.id}`}>
               <Button variant="primary" size="sm">
-                <ShoppingBag size={14} /> View {selected.name.split(' ')[0]}
+                <ShoppingBag size={14} /> View {selected.name.split(' ').slice(0, 2).join(' ')}
               </Button>
             </Link>
           )}
