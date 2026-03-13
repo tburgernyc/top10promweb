@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
   const role = profile?.role as UserRole | undefined
   if (!role || !['staff', 'store_admin', 'platform_admin'].includes(role)) {
-    redirect('/dashboard')
+    redirect('/profile')
   }
 
   // Fetch boutique assignment for non-platform admins

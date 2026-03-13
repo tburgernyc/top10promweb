@@ -3,15 +3,15 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, useReducedMotion } from 'motion/react'
-import { Home, Grid3X3, Camera, CalendarCheck, User } from 'lucide-react'
+import { Home, Grid3X3, Shirt, CalendarCheck, User } from 'lucide-react'
 import { useShopStore } from '@/lib/store/shopStore'
 
 const tabs = [
-  { href: '/home',     label: 'Home',     icon: Home },
-  { href: '/catalog',  label: 'Catalog',  icon: Grid3X3 },
-  { href: '/try-on',   label: 'Try-On',   icon: Camera },
-  { href: '/book',     label: 'Book',     icon: CalendarCheck },
-  { href: '/profile',  label: 'Profile',  icon: User },
+  { href: '/home',          label: 'Home',         icon: Home },
+  { href: '/catalog',       label: 'Catalog',      icon: Grid3X3 },
+  { href: '/fitting-room',  label: 'Fitting Room', icon: Shirt },
+  { href: '/book',          label: 'Book',         icon: CalendarCheck },
+  { href: '/profile',       label: 'Profile',      icon: User },
 ] as const
 
 export function BottomNav() {
@@ -29,7 +29,7 @@ export function BottomNav() {
           const Icon = tab.icon
           const isActive =
             tab.href === '/home' ? pathname === '/home' : pathname.startsWith(tab.href)
-          const isFitting = tab.href === '/try-on'
+          const isFitting = tab.href === '/fitting-room'
 
           return (
             <Link

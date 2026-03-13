@@ -9,6 +9,8 @@ import { useShopStore } from '@/lib/store/shopStore'
 import { STATIC_DRESSES } from '@/lib/data/dresses'
 import { Button } from '@/components/ui/Button'
 import { DressGridSkeleton } from '@/components/ui/Skeleton'
+import { ShareFittingRoom } from '@/components/social/ShareFittingRoom'
+import { ShareWithParent } from '@/components/social/ShareWithParent'
 import type { Dress, DressImage } from '@/types/index'
 import { createClient } from '@/lib/supabase/browser'
 
@@ -175,6 +177,10 @@ export function FittingRoomSession() {
   const [activeIdx, setActiveIdx] = useState(0)
   const [tryOnDress, setTryOnDress] = useState<Dress | null>(null)
   const [zoom, setZoom] = useState(false)
+  const [sessionToken] = useState(() =>
+    typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(36).slice(2)
+  )
+  const [shareToken, setShareToken] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isHydrated) return
@@ -202,6 +208,28 @@ export function FittingRoomSession() {
       setActiveIdx(dresses.length - 1)
     }
   }, [dresses.length, activeIdx])
+
+  async function requestShare(): Promise<string | null> {
+    // Ensure session exists in DB first
+    await fetch('/api/fitting-room', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_token: sessionToken, dress_ids: fittingRoomIds }),
+    })
+    const res = await fetch('/api/fitting-room', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_token: sessionToken }),
+    })
+    if (!res.ok) return null
+    const { share_token } = await res.json() as { share_token: string }
+    setShareToken(share_token)
+    return share_token
+  }
+
+  const shareUrl = shareToken
+    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/share/${shareToken}`
+    : null
 
   if (!isHydrated || loading) return <DressGridSkeleton count={4} />
 
@@ -379,6 +407,23 @@ export function FittingRoomSession() {
             <Link href="/book">
               <Button variant="primary" size="md" fullWidth>Book Appointment</Button>
             </Link>
+          </div>
+
+          {/* Share section */}
+          <div className="pt-3 border-t border-white/10 space-y-2">
+            <p className="text-xs text-platinum/50 font-semibold uppercase tracking-widest">Share</p>
+            <div className="flex flex-col gap-2">
+              <ShareFittingRoom
+                shareToken={shareToken}
+                onRequestShare={requestShare}
+              />
+              {active && (
+                <ShareWithParent
+                  shareUrl={shareUrl ?? `${typeof window !== 'undefined' ? window.location.origin : ''}/fitting-room`}
+                  dressName={active.name}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
