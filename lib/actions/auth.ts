@@ -35,8 +35,24 @@ export async function loginAction(
     return { status: 'error', message: error.message }
   }
 
+  // Check the user's role to route them to the correct dashboard
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    const ownerRoles = ['staff', 'store_admin', 'platform_admin']
+    if (profile?.role && ownerRoles.includes(profile.role)) {
+      redirect('/admin/dashboard')
+    }
+  }
+
+  // Customer: honour the redirect param (e.g. from a protected page) or fall back to profile
   const redirectTo = formData.get('redirect') as string | null
-  redirect(redirectTo ?? '/dashboard')
+  redirect(redirectTo ?? '/profile')
 }
 
 export async function signupAction(

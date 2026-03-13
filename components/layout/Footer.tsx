@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { ShieldCheck } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -47,15 +48,25 @@ export function Footer() {
               <li><Link href="/about" className="link-hover hover:text-ivory transition-colors">About Us</Link></li>
               <li><Link href="/faq" className="link-hover hover:text-ivory transition-colors">FAQ</Link></li>
               <li><Link href="/privacy" className="link-hover hover:text-ivory transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/owner-login" className="link-hover hover:text-ivory transition-colors">Owner Login</Link></li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+        {/* Bottom bar */}
+        <div className="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-platinum/40 text-xs">
             © {new Date().getFullYear()} Top 10 Prom. All rights reserved.
           </p>
+
+          {/* Owner / Staff Login — visually distinct from customer Sign In */}
+          <Link
+            href="/owner-login"
+            className="inline-flex items-center gap-2 text-xs font-medium text-platinum/50 hover:text-gold border border-white/8 hover:border-gold/30 rounded-lg px-3 py-1.5 transition-all"
+          >
+            <ShieldCheck size={13} />
+            Owner / Staff Login
+          </Link>
+
           <p className="text-platinum/30 text-xs">
             One dress. One school. One unforgettable night.
           </p>
