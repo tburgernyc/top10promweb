@@ -133,7 +133,7 @@ function FAQAccordion({ item }: { item: FAQItem }) {
   const shouldReduce = useReducedMotion()
 
   return (
-    <div className="border-b border-white/10 last:border-0">
+    <div className={['border-b last:border-0 transition-colors duration-200', open ? 'border-gold/20' : 'border-white/10'].join(' ')}>
       <button
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between gap-4 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-sm"
@@ -157,6 +157,7 @@ function FAQAccordion({ item }: { item: FAQItem }) {
             exit={shouldReduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
             transition={shouldReduce ? { duration: 0 } : { type: 'spring', stiffness: 340, damping: 32 }}
             className="overflow-hidden"
+            style={open ? { background: 'rgba(212,175,55,0.01)' } : undefined}
           >
             <p className="text-platinum/70 text-sm leading-relaxed pb-5 pr-6">{item.answer}</p>
           </motion.div>

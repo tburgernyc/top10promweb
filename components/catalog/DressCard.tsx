@@ -58,13 +58,19 @@ export function DressCard({ dress, isDuplicate = false }: DressCardProps) {
       {/* Image / Video */}
       <Link href={`/catalog/${dress.id}`} className="block relative aspect-[3/4] bg-onyx overflow-hidden">
         {primaryImage && (
-          <Image
-            src={primaryImage.url}
-            alt={primaryImage.alt ?? dress.name}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          />
+          <motion.div
+            className="absolute inset-0"
+            animate={shouldReduce ? {} : { scale: hovered ? 1.07 : 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+          >
+            <Image
+              src={primaryImage.url}
+              alt={primaryImage.alt ?? dress.name}
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+          </motion.div>
         )}
 
         {/* Hover video overlay */}

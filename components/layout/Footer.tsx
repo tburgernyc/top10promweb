@@ -22,10 +22,10 @@ export function Footer() {
           <div>
             <p className="text-ivory text-sm font-semibold mb-3">Shop</p>
             <ul className="flex flex-col gap-2 text-sm text-platinum/60">
-              <li><Link href="/catalog" className="hover:text-ivory transition-colors">Catalog</Link></li>
-              <li><Link href="/fitting-room" className="hover:text-ivory transition-colors">Fitting Room</Link></li>
-              <li><Link href="/wishlist" className="hover:text-ivory transition-colors">Wishlist</Link></li>
-              <li><Link href="/book" className="hover:text-ivory transition-colors">Book Appointment</Link></li>
+              <li><Link href="/catalog" className="link-hover hover:text-ivory transition-colors">Catalog</Link></li>
+              <li><Link href="/fitting-room" className="link-hover hover:text-ivory transition-colors">Fitting Room</Link></li>
+              <li><Link href="/wishlist" className="link-hover hover:text-ivory transition-colors">Wishlist</Link></li>
+              <li><Link href="/book" className="link-hover hover:text-ivory transition-colors">Book Appointment</Link></li>
             </ul>
           </div>
 
@@ -33,10 +33,10 @@ export function Footer() {
           <div>
             <p className="text-ivory text-sm font-semibold mb-3">Locations</p>
             <ul className="flex flex-col gap-2 text-sm text-platinum/60">
-              <li><Link href="/boutiques/atlanta" className="hover:text-ivory transition-colors">Atlanta</Link></li>
-              <li><Link href="/boutiques/marietta" className="hover:text-ivory transition-colors">Marietta</Link></li>
-              <li><Link href="/boutiques/alpharetta" className="hover:text-ivory transition-colors">Alpharetta</Link></li>
-              <li><Link href="/boutiques/buckhead" className="hover:text-ivory transition-colors">Buckhead</Link></li>
+              <li><Link href="/boutiques/atlanta" className="link-hover hover:text-ivory transition-colors">Atlanta</Link></li>
+              <li><Link href="/boutiques/marietta" className="link-hover hover:text-ivory transition-colors">Marietta</Link></li>
+              <li><Link href="/boutiques/alpharetta" className="link-hover hover:text-ivory transition-colors">Alpharetta</Link></li>
+              <li><Link href="/boutiques/buckhead" className="link-hover hover:text-ivory transition-colors">Buckhead</Link></li>
             </ul>
           </div>
 
@@ -44,10 +44,10 @@ export function Footer() {
           <div>
             <p className="text-ivory text-sm font-semibold mb-3">Info</p>
             <ul className="flex flex-col gap-2 text-sm text-platinum/60">
-              <li><Link href="/about" className="hover:text-ivory transition-colors">About Us</Link></li>
-              <li><Link href="/faq" className="hover:text-ivory transition-colors">FAQ</Link></li>
-              <li><Link href="/privacy" className="hover:text-ivory transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/owner-login" className="hover:text-ivory transition-colors">Owner Login</Link></li>
+              <li><Link href="/about" className="link-hover hover:text-ivory transition-colors">About Us</Link></li>
+              <li><Link href="/faq" className="link-hover hover:text-ivory transition-colors">FAQ</Link></li>
+              <li><Link href="/privacy" className="link-hover hover:text-ivory transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/owner-login" className="link-hover hover:text-ivory transition-colors">Owner Login</Link></li>
             </ul>
           </div>
         </div>

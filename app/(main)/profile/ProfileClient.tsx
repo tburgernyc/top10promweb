@@ -176,14 +176,21 @@ export function ProfileClient({ profile, inquiries, reservations, userEmail }: P
             className="space-y-3"
           >
             {inquiries.length === 0 ? (
-              <div className="glass-light rounded-2xl p-8 text-center space-y-3">
-                <CalendarDays size={32} className="text-platinum/20 mx-auto" />
-                <p className="text-ivory font-semibold">No appointments yet</p>
-                <p className="text-platinum/50 text-sm">Book a private fitting at any of our locations.</p>
+              <div className="glass-light rounded-2xl p-8 text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-gold/[0.08] border border-gold/15 flex items-center justify-center mx-auto">
+                  <CalendarDays size={28} className="text-gold/60" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-ivory font-semibold">No appointments yet</p>
+                  <p className="text-platinum/50 text-sm">Book a private fitting at any of our boutiques.</p>
+                </div>
                 <Link href="/book"><Button variant="primary">Book Now</Button></Link>
               </div>
             ) : inquiries.map((inq) => {
               const img = getPrimaryImg(inq.dress.images)
+              const isPending = inq.status === 'pending'
+              const isConfirmed = inq.status === 'confirmed'
+              const badgeEl = <Badge variant={STATUS_COLORS[inq.status]}>{inq.status}</Badge>
               return (
                 <div key={inq.id} className="glass-light rounded-2xl p-4 flex items-center gap-4">
                   {img && <img src={img} alt={inq.dress.name} className="w-14 h-14 rounded-xl object-cover shrink-0" />}
@@ -196,7 +203,16 @@ export function ProfileClient({ profile, inquiries, reservations, userEmail }: P
                       </p>
                     )}
                   </div>
-                  <Badge variant={STATUS_COLORS[inq.status]}>{inq.status}</Badge>
+                  {isPending ? (
+                    <motion.div
+                      animate={shouldReduce ? {} : { opacity: [1, 0.6, 1] }}
+                      transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                    >
+                      {badgeEl}
+                    </motion.div>
+                  ) : isConfirmed ? (
+                    <div style={{ filter: 'drop-shadow(0 0 4px rgba(34,197,94,0.4))' }}>{badgeEl}</div>
+                  ) : badgeEl}
                 </div>
               )
             })}
@@ -214,14 +230,21 @@ export function ProfileClient({ profile, inquiries, reservations, userEmail }: P
             className="space-y-3"
           >
             {reservations.length === 0 ? (
-              <div className="glass-light rounded-2xl p-8 text-center space-y-3">
-                <ShieldCheck size={32} className="text-platinum/20 mx-auto" />
-                <p className="text-ivory font-semibold">No reservations yet</p>
-                <p className="text-platinum/50 text-sm">Reserve your dress and lock in your no-duplicate guarantee.</p>
+              <div className="glass-light rounded-2xl p-8 text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-gold/[0.08] border border-gold/15 flex items-center justify-center mx-auto">
+                  <ShieldCheck size={28} className="text-gold/60" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-ivory font-semibold">No reservations yet</p>
+                  <p className="text-platinum/50 text-sm">Reserve your dress and lock in your no-duplicate guarantee.</p>
+                </div>
                 <Link href="/catalog"><Button variant="primary">Shop Dresses</Button></Link>
               </div>
             ) : reservations.map((res) => {
               const img = getPrimaryImg(res.dress.images)
+              const isPending = res.status === 'reserved'
+              const isConfirmed = res.status === 'purchased'
+              const badgeEl = <Badge variant={STATUS_COLORS[res.status]}>{res.status}</Badge>
               return (
                 <div key={res.id} className="glass-light rounded-2xl p-4 flex items-center gap-4">
                   {img && <img src={img} alt={res.dress.name} className="w-14 h-14 rounded-xl object-cover shrink-0" />}
@@ -232,7 +255,16 @@ export function ProfileClient({ profile, inquiries, reservations, userEmail }: P
                       {res.school_name} · {res.event_date}
                     </p>
                   </div>
-                  <Badge variant={STATUS_COLORS[res.status]}>{res.status}</Badge>
+                  {isPending ? (
+                    <motion.div
+                      animate={shouldReduce ? {} : { opacity: [1, 0.6, 1] }}
+                      transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                    >
+                      {badgeEl}
+                    </motion.div>
+                  ) : isConfirmed ? (
+                    <div style={{ filter: 'drop-shadow(0 0 4px rgba(34,197,94,0.4))' }}>{badgeEl}</div>
+                  ) : badgeEl}
                 </div>
               )
             })}

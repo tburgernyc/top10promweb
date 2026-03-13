@@ -54,6 +54,7 @@ export function Step0SelectEvent({ onNext }: Step0SelectEventProps) {
             initial={shouldReduce ? {} : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 280, damping: 26, delay: idx * 0.08 }}
+            whileHover={shouldReduce ? {} : { y: -3, scale: 1.02 }}
             whileTap={shouldReduce ? {} : { scale: 0.97 }}
             onClick={() => handleSelect(type)}
             className={[

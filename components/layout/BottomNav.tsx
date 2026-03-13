@@ -44,6 +44,7 @@ export function BottomNav() {
                   size={22}
                   className={isActive ? 'text-gold' : 'text-platinum/60'}
                   strokeWidth={isActive ? 2 : 1.5}
+                  style={isActive && !shouldReduce ? { filter: 'drop-shadow(0 0 6px rgba(212,175,55,0.55))' } : undefined}
                 />
                 {isFitting && fittingCount > 0 && (
                   <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 bg-gold text-onyx text-[9px] font-bold rounded-full flex items-center justify-center px-0.5">
