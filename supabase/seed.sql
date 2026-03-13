@@ -1,6 +1,6 @@
 -- ── Top 10 Prom · Seed Data ──────────────────────────────────────────────────
 -- Run this in your Supabase SQL editor to populate boutiques and sample dresses.
--- Images use Unsplash placeholders — replace with real product photos.
+-- Images are served from /public/dresses/[designer]/ as static assets.
 
 -- ── 1. Boutiques — Top 10 Prom own stores ────────────────────────────────────
 INSERT INTO boutiques (id, name, slug, address, city, state, zip, phone, email, timezone, lat, lng, is_active)
@@ -65,67 +65,256 @@ VALUES
   ('b2000000-0000-0000-0000-000000000048', 'Formals XO',                             'formals-xo',                 '2300 Lincoln Hwy, Oxford Valley Mall', 'Langhorne',        'PA', '19047', 'America/New_York', 40.1838453,  -74.8804078, true)
 ON CONFLICT (id) DO NOTHING;
 
--- ── 2. Dresses — Johnathan Kayne ─────────────────────────────────────────────
-INSERT INTO dresses (id, name, designer, style_number, color, price_cents, description, images, event_types, is_active)
+-- ── 2. Dresses ────────────────────────────────────────────────────────────────
+-- Images served from /public/dresses/[designer-slug]/[style].jpg
+INSERT INTO dresses (id, name, designer, style_number, price_cents, description, images, event_types, is_active)
 VALUES
-  ('d1000000-0000-0000-0000-000000000001', 'Sequin Mermaid Gown', 'Johnathan Kayne', '3315', 'Gold',
-   42900, 'Glamorous fully-sequined mermaid silhouette with a dramatic flared hem. Intricate goldwork throughout.',
-   '[{"url":"https://images.unsplash.com/photo-1566479179-c3b76e6b3f6e?w=800","alt":"Gold sequin mermaid gown","order":1,"is_primary":true}]'::jsonb,
-   '["prom"]'::jsonb, true),
-  ('d1000000-0000-0000-0000-000000000002', 'Feather Trim Ball Gown', 'Johnathan Kayne', '3244', 'Ivory',
-   52500, 'Luxurious ball gown with feather-trimmed hem and sweetheart neckline. Structured corset bodice.',
-   '[{"url":"https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800","alt":"Ivory feather ball gown","order":1,"is_primary":true}]'::jsonb,
+
+-- ── Johnathan Kayne ───────────────────────────────────────────────────────────
+  ('d1000000-0000-0000-0000-000000000001', 'Johnathan Kayne 2835', 'Johnathan Kayne', '2835',
+   44900, 'Show-stopping formal gown from Johnathan Kayne. Luxurious fabric and impeccable construction built for the spotlight.',
+   '[{"url":"/dresses/johnathan-kayne/2835.jpg","alt":"Johnathan Kayne style 2835","order":1,"is_primary":true}]'::jsonb,
+   '["prom","pageant"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000002', 'Johnathan Kayne 3039', 'Johnathan Kayne', '3039',
+   46500, 'Dramatic silhouette with signature Johnathan Kayne embellishment. Designed for unforgettable entrances.',
+   '[{"url":"/dresses/johnathan-kayne/3039.jpg","alt":"Johnathan Kayne style 3039","order":1,"is_primary":true}]'::jsonb,
+   '["prom","pageant"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000003', 'Johnathan Kayne 3084', 'Johnathan Kayne', '3084',
+   48000, 'Elegant evening gown with striking design details. A Johnathan Kayne masterpiece for prom season.',
+   '[{"url":"/dresses/johnathan-kayne/3084.jpg","alt":"Johnathan Kayne style 3084","order":1,"is_primary":true}]'::jsonb,
+   '["prom","pageant"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000036', 'Johnathan Kayne 3144', 'Johnathan Kayne', '3144',
+   49500, 'Glamorous gown with bold design elements and premium fabric. Built for the red carpet.',
+   '[{"url":"/dresses/johnathan-kayne/3144.jpg","alt":"Johnathan Kayne style 3144","order":1,"is_primary":true}]'::jsonb,
+   '["prom","pageant"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000037', 'Johnathan Kayne 3208', 'Johnathan Kayne', '3208',
+   52000, 'Floor-length gown with intricate detailing and a commanding presence. A Johnathan Kayne signature piece.',
+   '[{"url":"/dresses/johnathan-kayne/3208.jpg","alt":"Johnathan Kayne style 3208","order":1,"is_primary":true}]'::jsonb,
+   '["prom","pageant"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000038', 'Johnathan Kayne 3251', 'Johnathan Kayne', '3251',
+   54000, 'Couture-inspired formal gown with meticulous craftsmanship and luxe materials throughout.',
+   '[{"url":"/dresses/johnathan-kayne/3251.jpg","alt":"Johnathan Kayne style 3251","order":1,"is_primary":true}]'::jsonb,
+   '["prom","pageant"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000039', 'Johnathan Kayne 9213', 'Johnathan Kayne', '9213',
+   58000, 'Iconic Johnathan Kayne design with breathtaking detail work. Shown from multiple angles.',
+   '[{"url":"/dresses/johnathan-kayne/9213.jpg","alt":"Johnathan Kayne style 9213 front","order":1,"is_primary":true},{"url":"/dresses/johnathan-kayne/9213A.jpg","alt":"Johnathan Kayne style 9213 back","order":2,"is_primary":false}]'::jsonb,
+   '["prom","pageant"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000040', 'Johnathan Kayne Overskirt', 'Johnathan Kayne', 'OVERSKIRT',
+   62000, 'Dramatic two-piece look featuring a detachable overskirt. Go from ceremony to dance floor in one stunning look.',
+   '[{"url":"/dresses/johnathan-kayne/OVERSKIRT1.jpg","alt":"Johnathan Kayne overskirt style — with overskirt","order":1,"is_primary":true},{"url":"/dresses/johnathan-kayne/OVERSKIRT2.jpg","alt":"Johnathan Kayne overskirt style — without overskirt","order":2,"is_primary":false}]'::jsonb,
+   '["prom","wedding","pageant"]'::jsonb, true),
+
+-- ── Ashley Lauren ─────────────────────────────────────────────────────────────
+  ('d1000000-0000-0000-0000-000000000004', 'Ashley Lauren 11236', 'Ashley Lauren', '11236',
+   48000, 'Hand-beaded column gown with timeless elegance. Meticulous bead placement creates a luminous, eye-catching effect.',
+   '[{"url":"/dresses/ashley-lauren/11236.jpg","alt":"Ashley Lauren style 11236","order":1,"is_primary":true}]'::jsonb,
    '["prom","wedding"]'::jsonb, true),
-  ('d1000000-0000-0000-0000-000000000003', 'Beaded A-Line Gown', 'Johnathan Kayne', '3209', 'Navy Blue',
-   38900, 'Elegant A-line silhouette with intricate hand-beaded bodice and flowy chiffon skirt.',
-   '[{"url":"https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800","alt":"Navy beaded A-line gown","order":1,"is_primary":true}]'::jsonb,
+
+  ('d1000000-0000-0000-0000-000000000013', 'Ashley Lauren 11238', 'Ashley Lauren', '11238',
+   49000, 'Sophisticated Ashley Lauren formal gown with expert beadwork and a flattering silhouette.',
+   '[{"url":"/dresses/ashley-lauren/11238.jpg","alt":"Ashley Lauren style 11238","order":1,"is_primary":true}]'::jsonb,
+   '["prom","wedding"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000014', 'Ashley Lauren 11690', 'Ashley Lauren', '11690',
+   51000, 'Stunning Ashley Lauren gown with intricate embellishments and a silhouette designed to impress.',
+   '[{"url":"/dresses/ashley-lauren/11690.jpg","alt":"Ashley Lauren style 11690","order":1,"is_primary":true}]'::jsonb,
+   '["prom","wedding"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000005', 'Ashley Lauren 11751', 'Ashley Lauren', '11751',
+   56000, 'Breathtaking gown with thousands of hand-applied crystals and a sweeping skirt that commands the room.',
+   '[{"url":"/dresses/ashley-lauren/11751.jpg","alt":"Ashley Lauren style 11751","order":1,"is_primary":true}]'::jsonb,
+   '["prom","wedding"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000015', 'Ashley Lauren 12149', 'Ashley Lauren', '12149',
+   53000, 'Elegant Ashley Lauren design featuring signature embellishment and a refined, modern silhouette.',
+   '[{"url":"/dresses/ashley-lauren/12149.jpg","alt":"Ashley Lauren style 12149","order":1,"is_primary":true}]'::jsonb,
+   '["prom","wedding"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000016', 'Ashley Lauren 12230', 'Ashley Lauren', '12230',
+   55000, 'Glamorous formal gown with Ashley Lauren''s signature attention to detail and premium fabric.',
+   '[{"url":"/dresses/ashley-lauren/12230.jpg","alt":"Ashley Lauren style 12230","order":1,"is_primary":true}]'::jsonb,
+   '["prom","wedding"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000017', 'Ashley Lauren 12231', 'Ashley Lauren', '12231',
+   55500, 'Show-stopping evening gown with exceptional craftsmanship. A standout from the Ashley Lauren collection.',
+   '[{"url":"/dresses/ashley-lauren/12231.jpg","alt":"Ashley Lauren style 12231","order":1,"is_primary":true}]'::jsonb,
+   '["prom","wedding"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000018', 'Ashley Lauren 1624', 'Ashley Lauren', '1624',
+   38000, 'Classic Ashley Lauren silhouette with refined details and flattering construction for any formal occasion.',
+   '[{"url":"/dresses/ashley-lauren/1624.jpg","alt":"Ashley Lauren style 1624","order":1,"is_primary":true}]'::jsonb,
    '["prom"]'::jsonb, true),
 
--- ── Ashley Lauren ────────────────────────────────────────────────────────────
-  ('d1000000-0000-0000-0000-000000000004', 'Hand-Beaded Column Gown', 'Ashley Lauren', '11236', 'Silver',
-   48000, 'Fully hand-beaded column gown with timeless elegance. Meticulous bead placement creates a luminous effect.',
-   '[{"url":"https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=800","alt":"Silver hand-beaded column gown","order":1,"is_primary":true}]'::jsonb,
-   '["prom","wedding"]'::jsonb, true),
-  ('d1000000-0000-0000-0000-000000000005', 'Crystal Embellished Ballgown', 'Ashley Lauren', '11751', 'Blush',
-   56000, 'Breathtaking ballgown with thousands of hand-applied crystals on a blush tulle skirt.',
-   '[{"url":"https://images.unsplash.com/photo-1519657337289-077653f724ed?w=800","alt":"Blush crystal ballgown","order":1,"is_primary":true}]'::jsonb,
-   '["prom","wedding"]'::jsonb, true),
+  ('d1000000-0000-0000-0000-000000000019', 'Ashley Lauren 1740', 'Ashley Lauren', '1740',
+   40000, 'Polished formal gown from Ashley Lauren with a timeless aesthetic and beautifully draped fabric.',
+   '[{"url":"/dresses/ashley-lauren/1740.jpg","alt":"Ashley Lauren style 1740","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
 
--- ── Jessica Angel ────────────────────────────────────────────────────────────
-  ('d1000000-0000-0000-0000-000000000006', 'Bold Cutout Dress', 'Jessica Angel', '727R', 'Red',
+  ('d1000000-0000-0000-0000-000000000020', 'Ashley Lauren 4500', 'Ashley Lauren', '4500',
+   44000, 'Refined and elegant Ashley Lauren gown with a sophisticated look perfect for prom and formal events.',
+   '[{"url":"/dresses/ashley-lauren/4500.jpg","alt":"Ashley Lauren style 4500","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+-- ── Jessica Angel ─────────────────────────────────────────────────────────────
+  ('d1000000-0000-0000-0000-000000000028', 'Jessica Angel 327R', 'Jessica Angel', '327R',
+   31000, 'Bold Jessica Angel design with a striking silhouette and flattering fit. Perfect for the confident prom-goer.',
+   '[{"url":"/dresses/jessica-angel/327R.jpg","alt":"Jessica Angel style 327R","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000029', 'Jessica Angel 338', 'Jessica Angel', '338',
+   29500, 'Head-turning Jessica Angel style with modern lines and premium stretch fabric for the perfect fit.',
+   '[{"url":"/dresses/jessica-angel/338.jpg","alt":"Jessica Angel style 338","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000030', 'Jessica Angel 345', 'Jessica Angel', '345',
+   30000, 'Sleek and sophisticated Jessica Angel gown. A curve-hugging silhouette with dramatic flair.',
+   '[{"url":"/dresses/jessica-angel/345.jpg","alt":"Jessica Angel style 345","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000031', 'Jessica Angel 528', 'Jessica Angel', '528',
+   33500, 'Statement-making Jessica Angel dress with eye-catching design details built for the dance floor.',
+   '[{"url":"/dresses/jessica-angel/528.jpg","alt":"Jessica Angel style 528","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000032', 'Jessica Angel 538', 'Jessica Angel', '538',
+   34000, 'Figure-flattering Jessica Angel style with glam detailing and a confident, fashion-forward look.',
+   '[{"url":"/dresses/jessica-angel/538.jpg","alt":"Jessica Angel style 538","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000033', 'Jessica Angel 571', 'Jessica Angel', '571',
+   34500, 'Chic Jessica Angel gown with alluring design details. Crafted in LA for maximum impact.',
+   '[{"url":"/dresses/jessica-angel/571.jpg","alt":"Jessica Angel style 571","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000034', 'Jessica Angel 573', 'Jessica Angel', '573',
+   35000, 'Glamorous and confident Jessica Angel silhouette. Premium fabric with stunning drape and construction.',
+   '[{"url":"/dresses/jessica-angel/573.jpg","alt":"Jessica Angel style 573","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000006', 'Jessica Angel 727R', 'Jessica Angel', '727R',
    32900, 'Striking cutout design with bold silhouette and dramatic back detail. Built for the confident wearer.',
-   '[{"url":"https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=800","alt":"Red cutout dress","order":1,"is_primary":true}]'::jsonb,
-   '["prom"]'::jsonb, true),
-  ('d1000000-0000-0000-0000-000000000007', 'Glitter Mermaid Dress', 'Jessica Angel', '880', 'Black',
-   35500, 'Head-to-toe glitter fabric in a figure-hugging mermaid cut with high slit and ruched detailing.',
-   '[{"url":"https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800","alt":"Black glitter mermaid dress","order":1,"is_primary":true}]'::jsonb,
+   '[{"url":"/dresses/jessica-angel/727R.jpg","alt":"Jessica Angel style 727R","order":1,"is_primary":true}]'::jsonb,
    '["prom"]'::jsonb, true),
 
--- ── Kate Parker ──────────────────────────────────────────────────────────────
-  ('d1000000-0000-0000-0000-000000000008', 'Tulle Princess Gown', 'Kate Parker', '26034', 'Light Blue',
-   28900, 'Youthful and playful multi-layer tulle princess silhouette with embellished bodice.',
-   '[{"url":"https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800","alt":"Light blue tulle princess gown","order":1,"is_primary":true}]'::jsonb,
-   '["prom"]'::jsonb, true),
-  ('d1000000-0000-0000-0000-000000000009', 'Floral Print Maxi', 'Kate Parker', '26080', 'Multicolor',
-   24500, 'Vibrant floral print with modern wrap silhouette. Eye-catching pattern in a flattering maxi length.',
-   '[{"url":"https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=800","alt":"Floral print maxi dress","order":1,"is_primary":true}]'::jsonb,
+  ('d1000000-0000-0000-0000-000000000007', 'Jessica Angel 880', 'Jessica Angel', '880',
+   35500, 'Head-to-toe glitter fabric in a figure-hugging silhouette with ruched detailing and a high slit.',
+   '[{"url":"/dresses/jessica-angel/880.jpg","alt":"Jessica Angel style 880","order":1,"is_primary":true}]'::jsonb,
    '["prom"]'::jsonb, true),
 
--- ── Chandalier ───────────────────────────────────────────────────────────────
-  ('d1000000-0000-0000-0000-000000000010', 'LA Slit Gown', 'Chandalier', '30081', 'Black',
-   36800, 'Sleek LA-designed floor-length gown with dramatic thigh slit and daring low back. Fluid crepe fabric.',
-   '[{"url":"https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800","alt":"Black LA slit gown","order":1,"is_primary":true}]'::jsonb,
-   '["prom"]'::jsonb, true),
-  ('d1000000-0000-0000-0000-000000000011', 'Velvet Cowl Neck Dress', 'Chandalier', '30108', 'Plum',
-   33200, 'Luxurious stretch velvet with elegant cowl neckline. Designed and manufactured in Los Angeles.',
-   '[{"url":"https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800","alt":"Plum velvet cowl neck dress","order":1,"is_primary":true}]'::jsonb,
+  ('d1000000-0000-0000-0000-000000000035', 'Jessica Angel 974', 'Jessica Angel', '974',
+   36000, 'Luxurious Jessica Angel evening gown with an elevated, polished design. A standout in the collection.',
+   '[{"url":"/dresses/jessica-angel/974.jpg","alt":"Jessica Angel style 974","order":1,"is_primary":true}]'::jsonb,
    '["prom"]'::jsonb, true),
 
--- ── 2Cute Homecoming ─────────────────────────────────────────────────────────
-  ('d1000000-0000-0000-0000-000000000012', 'Sequin Mini Dress', '2Cute Homecoming', '33558', 'Hot Pink',
-   18900, 'Flirty all-over sequin mini with flattering ruched sides. The ultimate homecoming statement.',
-   '[{"url":"https://images.unsplash.com/photo-1572804013427-4d7ca7268217?w=800","alt":"Hot pink sequin mini dress","order":1,"is_primary":true}]'::jsonb,
+-- ── Chandalier ────────────────────────────────────────────────────────────────
+  ('d1000000-0000-0000-0000-000000000011', 'Chandalier 30020', 'Chandalier', '30020',
+   32000, 'Sleek LA-designed Chandalier gown with modern lines and fluid fabric. Effortlessly chic.',
+   '[{"url":"/dresses/chandalier/30020.jpg","alt":"Chandalier style 30020","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000012', 'Chandalier 30021', 'Chandalier', '30021',
+   32500, 'Contemporary Chandalier silhouette with signature LA style. Designed for the modern prom queen.',
+   '[{"url":"/dresses/chandalier/30021.jpg","alt":"Chandalier style 30021","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000021', 'Chandalier 30023', 'Chandalier', '30023',
+   33000, 'Bold Chandalier design with a fashion-forward aesthetic. Manufactured in Los Angeles with premium materials.',
+   '[{"url":"/dresses/chandalier/30023.jpg","alt":"Chandalier style 30023","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000022', 'Chandalier 30029', 'Chandalier', '30029',
+   33500, 'Flawless Chandalier evening gown with a striking silhouette and impeccable LA craftsmanship.',
+   '[{"url":"/dresses/chandalier/30029.jpg","alt":"Chandalier style 30029","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000023', 'Chandalier 30032', 'Chandalier', '30032',
+   34000, 'Stunning floor-length Chandalier gown with modern design sensibility and luxurious drape.',
+   '[{"url":"/dresses/chandalier/30032.jpg","alt":"Chandalier style 30032","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000024', 'Chandalier 30045', 'Chandalier', '30045',
+   35000, 'Elegant Chandalier formal with sleek lines and a confident, runway-ready silhouette.',
+   '[{"url":"/dresses/chandalier/30045.jpg","alt":"Chandalier style 30045","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000025', 'Chandalier 30047', 'Chandalier', '30047',
+   35500, 'Chic and sophisticated Chandalier dress. Designed and produced in Los Angeles for a polished finish.',
+   '[{"url":"/dresses/chandalier/30047.jpg","alt":"Chandalier style 30047","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000026', 'Chandalier 30063', 'Chandalier', '30063',
+   36000, 'Contemporary Chandalier evening gown with a sleek, modern aesthetic and luxe fabric choice.',
+   '[{"url":"/dresses/chandalier/30063.jpg","alt":"Chandalier style 30063","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000027', 'Chandalier 30064', 'Chandalier', '30064',
+   36500, 'Sophisticated Chandalier gown with seamless LA styling and a silhouette that turns heads.',
+   '[{"url":"/dresses/chandalier/30064.jpg","alt":"Chandalier style 30064","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000010', 'Chandalier 30081', 'Chandalier', '30081',
+   36800, 'Sleek floor-length gown with dramatic thigh slit and daring low back. Fluid crepe fabric made in LA.',
+   '[{"url":"/dresses/chandalier/30081.jpg","alt":"Chandalier style 30081","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+-- ── Kate Parker ───────────────────────────────────────────────────────────────
+  ('d1000000-0000-0000-0000-000000000008', 'Kate Parker 26014', 'Kate Parker', '26014',
+   22000, 'Playful and flattering Kate Parker prom gown. Youthful silhouette with charming details.',
+   '[{"url":"/dresses/kate-parker/26014.jpg","alt":"Kate Parker style 26014","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000041', 'Kate Parker 26018', 'Kate Parker', '26018',
+   22500, 'Sweet Kate Parker design with a fresh, modern look perfect for prom night.',
+   '[{"url":"/dresses/kate-parker/26018.jpg","alt":"Kate Parker style 26018","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000042', 'Kate Parker 26043', 'Kate Parker', '26043',
+   23000, 'Charming Kate Parker gown with feminine styling and a flattering, age-appropriate silhouette.',
+   '[{"url":"/dresses/kate-parker/26043.jpg","alt":"Kate Parker style 26043","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000043', 'Kate Parker 26050', 'Kate Parker', '26050',
+   23500, 'Beautiful Kate Parker formal gown with delicate detailing and a youthful, vibrant aesthetic.',
+   '[{"url":"/dresses/kate-parker/26050.jpg","alt":"Kate Parker style 26050","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000044', 'Kate Parker 26058', 'Kate Parker', '26058',
+   24000, 'Eye-catching Kate Parker prom style with a fresh look and comfortable, confidence-boosting fit.',
+   '[{"url":"/dresses/kate-parker/26058.jpg","alt":"Kate Parker style 26058","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000009', 'Kate Parker 26080', 'Kate Parker', '26080',
+   24500, 'Vibrant Kate Parker design with a modern silhouette and eye-catching style. Perfect for prom.',
+   '[{"url":"/dresses/kate-parker/26080.jpg","alt":"Kate Parker style 26080","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000045', 'Kate Parker 26084', 'Kate Parker', '26084',
+   25000, 'Fresh and fun Kate Parker gown with a flattering fit and playful design details.',
+   '[{"url":"/dresses/kate-parker/26084.jpg","alt":"Kate Parker style 26084","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000046', 'Kate Parker 26085', 'Kate Parker', '26085',
+   25500, 'Stylish Kate Parker prom dress with a chic silhouette and premium fabric for an elevated look.',
+   '[{"url":"/dresses/kate-parker/26085.jpg","alt":"Kate Parker style 26085","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000047', 'Kate Parker 26087', 'Kate Parker', '26087',
+   26000, 'Elegant Kate Parker design with a polished finish and flattering lines for the perfect prom night.',
+   '[{"url":"/dresses/kate-parker/26087.jpg","alt":"Kate Parker style 26087","order":1,"is_primary":true}]'::jsonb,
+   '["prom"]'::jsonb, true),
+
+  ('d1000000-0000-0000-0000-000000000048', 'Kate Parker 26088', 'Kate Parker', '26088',
+   26500, 'Gorgeous Kate Parker formal gown with a standout look and impeccable fit for prom night.',
+   '[{"url":"/dresses/kate-parker/26088.jpg","alt":"Kate Parker style 26088","order":1,"is_primary":true}]'::jsonb,
    '["prom"]'::jsonb, true)
+
 ON CONFLICT (id) DO NOTHING;
 
 -- ── 3. Dress Inventory — link dresses to boutiques ───────────────────────────
