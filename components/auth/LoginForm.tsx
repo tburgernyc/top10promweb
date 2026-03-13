@@ -11,11 +11,13 @@ const initial: AuthFormState = { status: 'idle', message: '' }
 
 interface LoginFormProps {
   redirectTo?: string
+  mode?: 'customer' | 'staff'
 }
 
-export function LoginForm({ redirectTo }: LoginFormProps) {
+export function LoginForm({ redirectTo, mode = 'customer' }: LoginFormProps) {
   const shouldReduce = useReducedMotion()
   const [state, formAction, isPending] = useActionState(loginAction, initial)
+  const isStaff = mode === 'staff'
 
   return (
     <motion.div
@@ -26,8 +28,12 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
     >
       <div className="glass-heavy rounded-2xl p-8 space-y-6">
         <div className="text-center space-y-1">
-          <h1 className="text-2xl font-semibold text-ivory">Welcome back</h1>
-          <p className="text-sm text-platinum">Sign in to your account</p>
+          <h1 className="text-2xl font-semibold text-ivory">
+            {isStaff ? 'Staff Portal' : 'Welcome back'}
+          </h1>
+          <p className="text-sm text-platinum">
+            {isStaff ? 'Sign in to your store admin account' : 'Sign in to your account'}
+          </p>
         </div>
 
         {state.status === 'error' && (
@@ -70,10 +76,21 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
         </form>
 
         <p className="text-center text-sm text-platinum">
-          No account?{' '}
-          <Link href="/signup" className="text-gold hover:underline">
-            Create one
-          </Link>
+          {isStaff ? (
+            <>
+              Customer?{' '}
+              <Link href="/login" className="text-gold hover:underline">
+                Customer login →
+              </Link>
+            </>
+          ) : (
+            <>
+              No account?{' '}
+              <Link href="/signup" className="text-gold hover:underline">
+                Create one
+              </Link>
+            </>
+          )}
         </p>
       </div>
     </motion.div>
