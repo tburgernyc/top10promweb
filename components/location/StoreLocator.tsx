@@ -40,7 +40,7 @@ export function StoreLocator({ stores }: StoreLocatorProps) {
   const [stateFilter, setStateFilter] = useState('')
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [mobileView, setMobileView] = useState<'list' | 'map'>('list')
-  const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map())
+  const cardRefs = useRef(new Map<string, HTMLDivElement>())
   const listRef = useRef<HTMLDivElement>(null)
 
   const states = useMemo(() => {
