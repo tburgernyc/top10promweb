@@ -7,6 +7,7 @@ import type { Database } from '@/types/database'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { MapPin, Check } from 'lucide-react'
+import { STATIC_BOUTIQUES } from '@/lib/data/boutiques'
 
 interface BoutiqueRow {
   id: string
@@ -34,11 +35,12 @@ export function Step2Store({ selectedBoutiqueId, onNext, onBack }: Step2StorePro
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null)
 
   useEffect(() => {
-    // Request geolocation for distance sorting (non-blocking)
+    // Request geolocation for distance sorting (optional — never blocks store list)
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => { /* silently ignore — distance is optional */ }
+        () => { /* denied or unavailable — distance column is hidden, list still shows */ },
+        { timeout: 8000 }
       )
     }
 
@@ -48,13 +50,22 @@ export function Step2Store({ selectedBoutiqueId, onNext, onBack }: Step2StorePro
     )
 
     async function fetchBoutiques() {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data } = await (supabase as any)
-        .from('boutiques')
-        .select('id, name, slug, city, state, address, lat, lng')
-        .eq('is_active', true)
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data, error } = await (supabase as any)
+          .from('boutiques')
+          .select('id, name, slug, city, state, address, lat, lng')
+          .eq('is_active', true)
 
-      setBoutiques(data ?? [])
+        if (!error && data && data.length > 0) {
+          setBoutiques(data)
+        } else {
+          // Supabase table empty or not yet seeded — fall back to static list
+          setBoutiques(STATIC_BOUTIQUES)
+        }
+      } catch {
+        setBoutiques(STATIC_BOUTIQUES)
+      }
       setLoading(false)
     }
 
