@@ -47,9 +47,9 @@ export default async function StaffPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-ivory">Staff</h1>
+        <h1 className="text-2xl font-bold text-ivory">Team</h1>
         <p className="text-platinum text-sm mt-1">
-          {boutiqueName ? `Manage staff for ${boutiqueName}.` : 'Manage staff across all boutiques.'}
+          {boutiqueName ? `Manage team members for ${boutiqueName}.` : 'Manage team members across all boutiques.'}
         </p>
       </div>
       <StaffList

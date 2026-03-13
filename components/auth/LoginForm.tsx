@@ -29,10 +29,10 @@ export function LoginForm({ redirectTo, mode = 'customer' }: LoginFormProps) {
       <div className="glass-heavy rounded-2xl p-8 space-y-6">
         <div className="text-center space-y-1">
           <h1 className="text-2xl font-semibold text-ivory">
-            {isStaff ? 'Staff Portal' : 'Welcome back'}
+            {isStaff ? 'Owner Portal' : 'Welcome back'}
           </h1>
           <p className="text-sm text-platinum">
-            {isStaff ? 'Sign in to your store admin account' : 'Sign in to your account'}
+            {isStaff ? 'Sign in to your owner account' : 'Sign in to your account'}
           </p>
         </div>
 

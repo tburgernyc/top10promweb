@@ -69,7 +69,7 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-ivory">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-ivory">Owner Dashboard</h1>
         <p className="text-platinum text-sm mt-1">
           {role === 'platform_admin' ? 'All locations overview' : `Today — ${today}`}
         </p>

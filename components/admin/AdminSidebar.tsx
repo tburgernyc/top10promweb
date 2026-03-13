@@ -23,7 +23,7 @@ const NAV_ITEMS = [
   { href: '/admin/inventory', label: 'Inventory', icon: Package },
   { href: '/admin/appointments', label: 'Appointments', icon: Calendar },
   { href: '/admin/reservations', label: 'Reservations', icon: ShieldCheck },
-  { href: '/admin/staff', label: 'Staff', icon: Users, roles: ['store_admin', 'platform_admin'] as UserRole[] },
+  { href: '/admin/staff', label: 'Team', icon: Users, roles: ['store_admin', 'platform_admin'] as UserRole[] },
   { href: '/admin/settings', label: 'Settings', icon: Settings, roles: ['store_admin', 'platform_admin'] as UserRole[] },
 ]
 
@@ -44,7 +44,7 @@ function SidebarContent({ pathname, visibleNav, boutiqueName, role, userName, on
         <Link href="/admin/dashboard" className="flex items-center gap-2">
           <span className="text-gold font-bold text-lg tracking-tight">
             Top<span className="text-ivory">10</span>
-            <span className="text-platinum text-sm font-normal ml-1">Admin</span>
+            <span className="text-platinum text-sm font-normal ml-1">Owner</span>
           </span>
         </Link>
         {boutiqueName && role !== 'platform_admin' && (
@@ -135,7 +135,7 @@ export function AdminSidebar({ role, userName, boutiqueName }: AdminSidebarProps
       <div className="md:hidden fixed top-0 inset-x-0 z-30 h-16 glass-heavy border-b border-white/10 flex items-center justify-between px-4">
         <Link href="/admin/dashboard" className="text-gold font-bold text-lg">
           Top<span className="text-ivory">10</span>
-          <span className="text-platinum text-sm font-normal ml-1">Admin</span>
+          <span className="text-platinum text-sm font-normal ml-1">Owner</span>
         </Link>
         <button
           onClick={() => setMobileOpen(true)}
