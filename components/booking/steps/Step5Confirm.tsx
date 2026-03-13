@@ -44,14 +44,24 @@ export function Step5Confirm({ values, formAction, state, isPending, onBack }: S
     )
 
     async function fetchDetails() {
-      const [{ data: d }, { data: b }] = await Promise.all([
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (supabase as any).from('dresses').select('*').eq('id', values.dress_id).single(),
+      const fetches: Promise<unknown>[] = [
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (supabase as any).from('boutiques').select('*').eq('id', values.boutique_id).single(),
-      ])
-      setDress(d)
-      setBoutique(b)
+      ]
+
+      if (values.dress_id) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        fetches.unshift((supabase as any).from('dresses').select('*').eq('id', values.dress_id).single())
+      }
+
+      if (values.dress_id) {
+        const [{ data: d }, { data: b }] = await Promise.all(fetches) as [{ data: Dress | null }, { data: Boutique | null }]
+        setDress(d)
+        setBoutique(b)
+      } else {
+        const [{ data: b }] = await Promise.all(fetches) as [{ data: Boutique | null }]
+        setBoutique(b)
+      }
       setLoading(false)
     }
 
@@ -86,7 +96,7 @@ export function Step5Confirm({ values, formAction, state, isPending, onBack }: S
 
   return (
     <div className="space-y-6">
-      {dress && (
+      {dress ? (
         <div className="flex items-center gap-3 p-4 glass-light rounded-xl">
           {getPrimaryImage(dress) && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -99,6 +109,16 @@ export function Step5Confirm({ values, formAction, state, isPending, onBack }: S
           <div>
             <p className="text-ivory font-semibold">{dress.name}</p>
             {dress.designer && <p className="text-sm text-platinum">{dress.designer}</p>}
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 p-4 glass-light rounded-xl border border-white/10">
+          <div className="w-12 h-12 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0">
+            <span className="text-gold text-lg">✦</span>
+          </div>
+          <div>
+            <p className="text-ivory font-semibold">Browse in store</p>
+            <p className="text-sm text-platinum/60">Our stylists will help you find the perfect dress.</p>
           </div>
         </div>
       )}

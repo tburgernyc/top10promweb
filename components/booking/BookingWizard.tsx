@@ -4,7 +4,7 @@ import { useActionState, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { BookingProgress } from './BookingProgress'
 import { Step0SelectEvent } from './steps/Step0SelectEvent'
-import { Step1Dress } from './steps/Step1Dress'
+import { Step1Dress, type DressPreferences } from './steps/Step1Dress'
 import { Step2Store } from './steps/Step2Store'
 import { Step3DateTime } from './steps/Step3DateTime'
 import { Step4Contact } from './steps/Step4Contact'
@@ -49,6 +49,18 @@ const emptyValues: WizardValues = {
 
 interface BookingWizardProps {
   initialDressId?: string
+}
+
+function formatPreferences(prefs: DressPreferences): string {
+  const lines: string[] = ['Dress Preferences:']
+  if (prefs.occasion) lines.push(`• Occasion: ${prefs.occasion}`)
+  if (prefs.length) lines.push(`• Length: ${prefs.length}`)
+  if (prefs.color) lines.push(`• Color: ${prefs.color}`)
+  if (prefs.style) lines.push(`• Style: ${prefs.style}`)
+  if (prefs.timeOfDay) lines.push(`• Preferred time: ${prefs.timeOfDay}`)
+  if (prefs.season) lines.push(`• Season: ${prefs.season}`)
+  if (prefs.additionalNotes) lines.push(`• Additional notes: ${prefs.additionalNotes}`)
+  return lines.join('\n')
 }
 
 export function BookingWizard({ initialDressId }: BookingWizardProps) {
@@ -111,8 +123,14 @@ export function BookingWizard({ initialDressId }: BookingWizardProps) {
           {step === 1 && (
             <Step1Dress
               selectedDressId={values.dress_id || null}
-              onNext={(dressId) => {
-                mergeValues({ dress_id: dressId })
+              onNext={(dressId, preferences) => {
+                const prefsNote = preferences ? formatPreferences(preferences) : ''
+                // Merge prefs into notes; preserve any existing notes from Step4
+                const existingNotes = values.notes && !values.notes.startsWith('Dress Preferences:')
+                  ? values.notes
+                  : ''
+                const combinedNotes = [prefsNote, existingNotes].filter(Boolean).join('\n\n')
+                mergeValues({ dress_id: dressId, notes: combinedNotes })
                 setStep(2)
               }}
             />
@@ -153,7 +171,14 @@ export function BookingWizard({ initialDressId }: BookingWizardProps) {
               }}
               eventType={values.event_type}
               onNext={(contact) => {
-                mergeValues(contact)
+                // If user adds notes in Step4, append them after dress preferences
+                const prefsSection = values.notes.startsWith('Dress Preferences:')
+                  ? values.notes
+                  : ''
+                const newNotes = contact.notes && contact.notes !== values.notes
+                  ? [prefsSection, contact.notes].filter(Boolean).join('\n\n')
+                  : values.notes
+                mergeValues({ ...contact, notes: newNotes })
                 setStep(5)
               }}
               onBack={() => setStep(3)}

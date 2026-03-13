@@ -36,7 +36,8 @@ export type AvailabilityFormValues = z.infer<typeof availabilitySchema>
 
 // ── Booking wizard (step-by-step) ──────────────────────────────────────────
 export const bookingStep1Schema = z.object({
-  dress_id: z.string().uuid('Select a dress from your fitting room'),
+  // dress_id is optional — customers may book to browse/discover in store
+  dress_id: z.string().uuid().optional().or(z.literal('')),
 })
 
 export const bookingStep2Schema = z.object({
