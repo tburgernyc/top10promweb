@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { MapPin, ExternalLink, Search, ChevronDown, Map, List } from 'lucide-react'
+import { MapPin, ExternalLink, Search, ChevronDown, Map as MapIcon, List } from 'lucide-react'
 import { StoreMap } from './StoreMap'
 
 interface Store {
@@ -137,7 +137,7 @@ export function StoreLocator({ stores }: StoreLocatorProps) {
                 : 'text-platinum/60 hover:text-ivory'
             }`}
           >
-            <Map size={12} />
+            <MapIcon size={12} />
             Map
           </button>
         </div>
