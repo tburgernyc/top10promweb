@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { VirtualTryOn } from '@/components/tryon/VirtualTryOn'
 
+// Always render fresh — VirtualTryOn loads user-specific data client-side
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Virtual Try-On | Top 10 Prom',
   description: 'Upload your photo and see yourself in any prom dress. Our virtual try-on lets you compare looks side-by-side before booking your fitting appointment.',
