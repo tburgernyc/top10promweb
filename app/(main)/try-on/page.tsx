@@ -6,7 +6,13 @@ export const metadata: Metadata = {
   description: 'Upload your photo and see yourself in any prom dress. Our virtual try-on lets you compare looks side-by-side before booking your fitting appointment.',
 }
 
-export default function TryOnPage() {
+export default async function TryOnPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ dressId?: string }>
+}) {
+  const { dressId } = await searchParams
+
   return (
     <div className="relative min-h-dvh pb-24">
 
@@ -29,7 +35,7 @@ export default function TryOnPage() {
             Upload a full-length photo, browse our catalog, and see yourself in any dress — side-by-side — before you ever step in the store.
           </p>
         </div>
-        <VirtualTryOn />
+        <VirtualTryOn initialDressId={dressId} />
       </div>
     </div>
   )
