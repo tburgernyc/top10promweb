@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { STATIC_DRESSES } from '@/lib/data/dresses'
 import { DressCard } from './DressCard'
 import type { Dress } from '@/types/index'
 
@@ -11,16 +10,6 @@ interface DressCardGridProps {
   limit?: number
 }
 
-function applyStaticFilters(
-  dresses: Dress[],
-  opts: { color?: string | null; designer?: string | null; eventType?: string | null; limit: number }
-): Dress[] {
-  let filtered = dresses
-  if (opts.color) filtered = filtered.filter((d) => d.color?.toLowerCase().includes(opts.color!.toLowerCase()))
-  if (opts.designer) filtered = filtered.filter((d) => d.designer?.toLowerCase().includes(opts.designer!.toLowerCase()))
-  if (opts.eventType) filtered = filtered.filter((d) => Array.isArray(d.event_types) && (d.event_types as string[]).includes(opts.eventType!))
-  return filtered.slice(0, opts.limit)
-}
 
 export async function DressCardGrid({
   boutiqueId,
@@ -68,12 +57,6 @@ export async function DressCardGrid({
 
     const { data } = await query
     if (data) dresses = data as Dress[]
-  }
-
-  // Fall back to static catalog when Supabase has no dress data yet.
-  // Remove once seed.sql has been run against the live database.
-  if (dresses.length === 0 && !boutiqueId) {
-    dresses = applyStaticFilters(STATIC_DRESSES as unknown as Dress[], { color, designer, eventType, limit })
   }
 
   if (dresses.length === 0) {

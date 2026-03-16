@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { createClient } from '@/lib/supabase/server'
 import { StoreLocator } from '@/components/location/StoreLocator'
 import storesRaw from '@/public/data/stores.json'
 
@@ -7,56 +8,32 @@ export const metadata: Metadata = {
   description: 'Find your nearest Top 10 Prom authorized retailer. 50+ locations nationwide.',
 }
 
+// Fallback parser for static JSON — used only if Supabase returns nothing.
 function parseAddress(formatted: string) {
-  // Decode HTML entities
   const decoded = formatted.replace(/&amp;/g, '&')
-  // Try to extract "Street, City, STATE ZIP" or "Street, City, STATE ZIP, USA"
   const parts = decoded.split(',').map((p) => p.trim())
-  // Last parts pattern: "STATE ZIP" or "STATE ZIP, USA"
-  // Find the state/zip part
-  let city = ''
-  let state = ''
-  let zip = ''
-  let addressParts: string[] = []
-
-  // Walk backwards to find state abbreviation (2 caps) + optional zip
+  let city = '', state = '', zip = '', addressParts: string[] = []
   for (let i = parts.length - 1; i >= 0; i--) {
     const p = parts[i]
-    // Skip "USA"
     if (/^USA$/i.test(p)) continue
-    // Match "STATE ZIP" or "STATE"
     const stateZip = p.match(/^([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/)
     if (stateZip) {
-      state = stateZip[1]
-      zip = stateZip[2]
-      city = parts[i - 1] ?? ''
-      addressParts = parts.slice(0, i - 1)
+      state = stateZip[1]; zip = stateZip[2]
+      city = parts[i - 1] ?? ''; addressParts = parts.slice(0, i - 1)
       break
     }
-    // Match bare state abbreviation
     const stateOnly = p.match(/^([A-Z]{2})$/)
     if (stateOnly) {
       state = stateOnly[1]
-      city = parts[i - 1] ?? ''
-      addressParts = parts.slice(0, i - 1)
+      city = parts[i - 1] ?? ''; addressParts = parts.slice(0, i - 1)
       break
     }
   }
-
-  // If no state found, treat everything as address
-  if (!state) {
-    addressParts = parts
-  }
-
-  return {
-    address: addressParts.join(', '),
-    city,
-    state,
-    zip,
-  }
+  if (!state) addressParts = parts
+  return { address: addressParts.join(', '), city, state, zip }
 }
 
-const stores = storesRaw.map((s) => {
+const STATIC_STORES = storesRaw.map((s) => {
   const { address, city, state, zip } = parseAddress(s.FormattedAddress)
   return {
     name: s.Name.replace(/&amp;/g, '&'),
@@ -70,7 +47,41 @@ const stores = storesRaw.map((s) => {
   }
 })
 
-export default function BoutiquesPage() {
+export default async function BoutiquesPage() {
+  const supabase = await createClient()
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data } = await (supabase as any)
+    .from('boutiques')
+    .select('name, address, city, state, zip, lat, lng')
+    .eq('is_active', true)
+    .order('state', { ascending: true })
+    .order('name', { ascending: true }) as {
+      data: Array<{
+        name: string
+        address: string | null
+        city: string | null
+        state: string | null
+        zip: string | null
+        lat: number | null
+        lng: number | null
+      }> | null
+    }
+
+  const stores =
+    data && data.length > 0
+      ? data.map((b) => ({
+          name: b.name,
+          address: b.address ?? '',
+          city: b.city ?? '',
+          state: b.state ?? '',
+          zip: b.zip ?? '',
+          website: '',
+          lat: b.lat ?? 0,
+          lng: b.lng ?? 0,
+        }))
+      : STATIC_STORES
+
   return (
     <div className="min-h-dvh pb-24">
       <div className="max-w-3xl mx-auto px-4 pt-8 space-y-8">

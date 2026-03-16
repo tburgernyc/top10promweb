@@ -14,8 +14,12 @@ export type Database = {
           id: string
           email: string | null
           full_name: string | null
+          first_name: string | null
+          last_name: string | null
+          phone: string | null
           avatar_url: string | null
           role: 'customer' | 'staff' | 'store_admin' | 'platform_admin'
+          system_role: 'SUPER_ADMIN' | 'USER'
           created_at: string
           updated_at: string | null
         }
@@ -23,8 +27,12 @@ export type Database = {
           id: string
           email?: string | null
           full_name?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          phone?: string | null
           avatar_url?: string | null
           role?: 'customer' | 'staff' | 'store_admin' | 'platform_admin'
+          system_role?: 'SUPER_ADMIN' | 'USER'
           created_at?: string
           updated_at?: string | null
         }
@@ -32,8 +40,12 @@ export type Database = {
           id?: string
           email?: string | null
           full_name?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          phone?: string | null
           avatar_url?: string | null
           role?: 'customer' | 'staff' | 'store_admin' | 'platform_admin'
+          system_role?: 'SUPER_ADMIN' | 'USER'
           created_at?: string
           updated_at?: string | null
         }
@@ -104,6 +116,7 @@ export type Database = {
           lat: number | null
           lng: number | null
           is_active: boolean
+          subscription_status: 'ACTIVE' | 'PAST_DUE' | 'CANCELLED'
           created_at: string
         }
         Insert: {
@@ -121,6 +134,7 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           is_active?: boolean
+          subscription_status?: 'ACTIVE' | 'PAST_DUE' | 'CANCELLED'
           created_at?: string
         }
         Update: {
@@ -138,8 +152,129 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           is_active?: boolean
+          subscription_status?: 'ACTIVE' | 'PAST_DUE' | 'CANCELLED'
           created_at?: string
         }
+      }
+      appointments: {
+        Row: {
+          id: string
+          store_id: string
+          user_id: string | null
+          store_customer_id: string | null
+          appointment_date: string
+          appointment_type: 'APPOINTMENT' | 'WALK_IN'
+          status: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'NO_SHOW' | 'CANCELLED'
+          notes: string | null
+          sales_feedback: string | null
+          purchased_dress_id: string | null
+          created_by_staff_id: string | null
+          updated_by_staff_id: string | null
+          created_at: string
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          store_id: string
+          user_id?: string | null
+          store_customer_id?: string | null
+          appointment_date: string
+          appointment_type?: 'APPOINTMENT' | 'WALK_IN'
+          status?: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'NO_SHOW' | 'CANCELLED'
+          notes?: string | null
+          sales_feedback?: string | null
+          purchased_dress_id?: string | null
+          created_by_staff_id?: string | null
+          updated_by_staff_id?: string | null
+          created_at?: string
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          store_id?: string
+          user_id?: string | null
+          store_customer_id?: string | null
+          appointment_date?: string
+          appointment_type?: 'APPOINTMENT' | 'WALK_IN'
+          status?: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'NO_SHOW' | 'CANCELLED'
+          notes?: string | null
+          sales_feedback?: string | null
+          purchased_dress_id?: string | null
+          created_by_staff_id?: string | null
+          updated_by_staff_id?: string | null
+          created_at?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      store_customers: {
+        Row: {
+          id: string
+          store_id: string
+          global_user_id: string | null
+          first_name: string
+          last_name: string
+          phone: string | null
+          email: string | null
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          store_id: string
+          global_user_id?: string | null
+          first_name: string
+          last_name: string
+          phone?: string | null
+          email?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          store_id?: string
+          global_user_id?: string | null
+          first_name?: string
+          last_name?: string
+          phone?: string | null
+          email?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      store_staff: {
+        Row: {
+          id: string
+          user_id: string
+          store_id: string
+          role: 'OWNER' | 'MANAGER' | 'ASSOCIATE'
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          store_id: string
+          role?: 'OWNER' | 'MANAGER' | 'ASSOCIATE'
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          store_id?: string
+          role?: 'OWNER' | 'MANAGER' | 'ASSOCIATE'
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       wishlist: {
         Row: {
@@ -504,6 +639,9 @@ export type Database = {
     Functions: Record<string, never>
     Enums: {
       user_role: 'customer' | 'staff' | 'store_admin' | 'platform_admin'
+      subscription_status_enum: 'ACTIVE' | 'PAST_DUE' | 'CANCELLED'
+      staff_role_enum: 'OWNER' | 'MANAGER' | 'ASSOCIATE'
+      system_role_enum: 'SUPER_ADMIN' | 'USER'
     }
   }
 }
